@@ -60,12 +60,6 @@ const App = () => {
                   <Route path="/cupping-calculator" element={<CuppingCalculatorPage />} />
                   {/* Admin routes */}
                   <Route path="/admin/*" element={<Admin />} />
-                  <Route path="/admin" element={<Admin />} />
-                  <Route path="/admin/users" element={<Admin />} />
-                  <Route path="/admin/green" element={<Admin />} />
-                  <Route path="/admin/roast" element={<Admin />} />
-                  <Route path="/admin/cupping" element={<Admin />} />
-                  <Route path="/admin/customization" element={<Admin />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

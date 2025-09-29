@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { Coffee, Flame, FileText, User, Shield, Home, Calculator, Thermometer, FileText as FileTextIcon } from "lucide-react";
+import { Coffee, Flame, FileText, User, Shield, Home, Calculator, Thermometer, FileText as FileTextIcon, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isAdminUser } from '@/utils/adminUtils';
+import { useState, useEffect } from 'react';
 
 const MobileBottomNav = () => {
   const location = useLocation();
@@ -10,6 +11,14 @@ const MobileBottomNav = () => {
   
   // Use centralized admin check
   const isAdmin = isAdminUser(user);
+  
+  // State to track if we're in admin mode
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  
+  // Check if we're on an admin page to set admin mode
+  useEffect(() => {
+    setIsAdminMode(location.pathname.startsWith('/admin'));
+  }, [location.pathname]);
 
   // Define navigation items for regular users
   const regularNavItems = [
@@ -74,7 +83,7 @@ const MobileBottomNav = () => {
   ];
 
   // Determine which navigation items to show
-  const navItems = isAdmin ? adminNavItems : regularNavItems;
+  const navItems = isAdminMode ? adminNavItems : regularNavItems;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 md:hidden">
@@ -115,7 +124,7 @@ const MobileBottomNav = () => {
       </div>
       
       {/* Second row for calculators - only shown for non-admin users */}
-      {!isAdmin && (
+      {!isAdminMode && (
         <div className="flex items-center justify-around px-1 py-2 border-t border-border">
           <Link
             to="/calculator"
@@ -191,6 +200,24 @@ const MobileBottomNav = () => {
               Cupping
             </span>
           </Link>
+        </div>
+      )}
+      
+      {/* Admin toggle button - only shown for admin users */}
+      {isAdmin && (
+        <div className="flex items-center justify-center px-1 py-2 border-t border-border">
+          <button
+            onClick={() => setIsAdminMode(!isAdminMode)}
+            className={cn(
+              "flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium transition-colors",
+              isAdminMode 
+                ? "bg-destructive text-destructive-foreground" 
+                : "bg-primary text-primary-foreground"
+            )}
+          >
+            <Shield className="h-3 w-3" />
+            {isAdminMode ? "Exit Admin" : "Admin Mode"}
+          </button>
         </div>
       )}
     </nav>

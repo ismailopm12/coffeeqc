@@ -31,6 +31,7 @@ import FrontendCustomization from "@/components/admin/FrontendCustomization";
 import { EditGreenAssessmentForm } from "@/components/admin/EditGreenAssessmentForm";
 import { EditRoastProfileForm } from "@/components/admin/EditRoastProfileForm";
 import { EditCuppingSessionForm } from "@/components/admin/EditCuppingSessionForm";
+import { useNavigate, useLocation } from 'react-router-dom';
 
 type GreenAssessment = Database['public']['Tables']['green_assessments']['Row'];
 type RoastProfile = Database['public']['Tables']['roast_profiles']['Row'];
@@ -39,9 +40,12 @@ type CuppingSession = Database['public']['Tables']['cupping_sessions']['Row'];
 const Admin = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
   const [activeTab, setActiveTab] = useState(() => {
     // Set default tab based on URL
-    const path = window.location.pathname;
+    const path = location.pathname;
     if (path.includes('/users')) return 'users';
     if (path.includes('/green')) return 'green';
     if (path.includes('/roast')) return 'roast';
@@ -348,27 +352,27 @@ const Admin = () => {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2" onClick={() => window.history.pushState({}, '', '/admin')}>
+            <TabsTrigger value="dashboard" className="flex items-center gap-2" onClick={() => navigate('/admin')}>
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Dashboard</span>
             </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2" onClick={() => window.history.pushState({}, '', '/admin/users')}>
+            <TabsTrigger value="users" className="flex items-center gap-2" onClick={() => navigate('/admin/users')}>
               <Users className="h-4 w-4" />
               <span className="hidden sm:inline">Users</span>
             </TabsTrigger>
-            <TabsTrigger value="green" className="flex items-center gap-2" onClick={() => window.history.pushState({}, '', '/admin/green')}>
+            <TabsTrigger value="green" className="flex items-center gap-2" onClick={() => navigate('/admin/green')}>
               <Coffee className="h-4 w-4" />
               <span className="hidden sm:inline">Green</span>
             </TabsTrigger>
-            <TabsTrigger value="roast" className="flex items-center gap-2" onClick={() => window.history.pushState({}, '', '/admin/roast')}>
+            <TabsTrigger value="roast" className="flex items-center gap-2" onClick={() => navigate('/admin/roast')}>
               <Flame className="h-4 w-4" />
               <span className="hidden sm:inline">Roast</span>
             </TabsTrigger>
-            <TabsTrigger value="cupping" className="flex items-center gap-2" onClick={() => window.history.pushState({}, '', '/admin/cupping')}>
+            <TabsTrigger value="cupping" className="flex items-center gap-2" onClick={() => navigate('/admin/cupping')}>
               <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Cupping</span>
             </TabsTrigger>
-            <TabsTrigger value="customization" className="flex items-center gap-2" onClick={() => window.history.pushState({}, '', '/admin/customization')}>
+            <TabsTrigger value="customization" className="flex items-center gap-2" onClick={() => navigate('/admin/customization')}>
               <Palette className="h-4 w-4" />
               <span className="hidden sm:inline">Custom</span>
             </TabsTrigger>
