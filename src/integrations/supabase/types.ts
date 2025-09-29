@@ -289,6 +289,88 @@ export type Database = {
           },
         ]
       }
+      // New tables for welcome popup
+      user_popup_interactions: {
+        Row: {
+          created_at: string | null
+          dismissed: boolean
+          id: string
+          popup_setting_id: string
+          shown_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          dismissed?: boolean
+          id?: string
+          popup_setting_id: string
+          shown_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          dismissed?: boolean
+          id?: string
+          popup_setting_id?: string
+          shown_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_popup_interactions_popup_setting_id_fkey"
+            columns: ["popup_setting_id"]
+            isOneToOne: false
+            referencedRelation: "welcome_popup_settings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_popup_interactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      welcome_popup_settings: {
+        Row: {
+          button_text: string
+          created_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          message: string
+          show_once: boolean
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          button_text?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          message?: string
+          show_once?: boolean
+          title?: string
+          updated_at?: string | null
+        }
+        Update: {
+          button_text?: string
+          created_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          message?: string
+          show_once?: boolean
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -21,6 +21,8 @@ import RoastCalculator from "@/pages/RoastCalculator";
 import CuppingCalculatorPage from "@/pages/CuppingCalculatorPage";
 import { MessageCircle } from "lucide-react";
 import { useState } from "react";
+// Import WelcomePopup component
+import WelcomePopup from "@/components/WelcomePopup";
 
 // WhatsApp support function
 const openWhatsAppSupport = () => {
@@ -65,6 +67,7 @@ const App = () => {
                 </Routes>
               </main>
               <MobileBottomNav />
+              <WelcomePopup />
               
               {/* Floating WhatsApp Button for Mobile */}
               {showWhatsAppButton && (

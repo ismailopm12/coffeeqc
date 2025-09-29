@@ -20,7 +20,8 @@ import {
   Home,
   Users,
   Palette,
-  History
+  History,
+  MessageSquare
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -36,6 +37,7 @@ import { EditCuppingSessionForm } from "@/components/admin/EditCuppingSessionFor
 import { GreenAssessmentForm } from "@/components/green/GreenAssessmentForm";
 import { RoastProfileForm } from "@/components/roast/RoastProfileForm";
 import { CuppingSessionForm } from "@/components/cupping/CuppingSessionForm";
+import WelcomePopupManagement from "@/components/admin/WelcomePopupManagement";
 import { useNavigate, useLocation } from 'react-router-dom';
 
 type GreenAssessment = Database['public']['Tables']['green_assessments']['Row'];
@@ -57,6 +59,7 @@ const Admin = () => {
     if (path.includes('/cupping')) return 'cupping';
     if (path.includes('/history')) return 'history';
     if (path.includes('/customization')) return 'customization';
+    if (path.includes('/welcome-popup')) return 'welcome-popup';
     return 'dashboard'; // default
   });
   const [greenAssessments, setGreenAssessments] = useState<GreenAssessment[]>([]);
@@ -103,6 +106,12 @@ const Admin = () => {
           break;
         case "history":
           // History tab has its own data fetching
+          break;
+        case "customization":
+          // Customization tab has its own data fetching
+          break;
+        case "welcome-popup":
+          // Welcome popup tab has its own data fetching
           break;
       }
     } catch (error) {
@@ -441,35 +450,15 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2" onClick={() => navigate('/admin')}>
-              <Home className="h-4 w-4" />
-              <span className="hidden sm:inline">Dashboard</span>
-            </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2" onClick={() => navigate('/admin/users')}>
-              <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">Users</span>
-            </TabsTrigger>
-            <TabsTrigger value="green" className="flex items-center gap-2" onClick={() => navigate('/admin/green')}>
-              <Coffee className="h-4 w-4" />
-              <span className="hidden sm:inline">Green</span>
-            </TabsTrigger>
-            <TabsTrigger value="roast" className="flex items-center gap-2" onClick={() => navigate('/admin/roast')}>
-              <Flame className="h-4 w-4" />
-              <span className="hidden sm:inline">Roast</span>
-            </TabsTrigger>
-            <TabsTrigger value="cupping" className="flex items-center gap-2" onClick={() => navigate('/admin/cupping')}>
-              <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Cupping</span>
-            </TabsTrigger>
-            <TabsTrigger value="history" className="flex items-center gap-2" onClick={() => navigate('/admin/history')}>
-              <History className="h-4 w-4" />
-              <span className="hidden sm:inline">History</span>
-            </TabsTrigger>
-            <TabsTrigger value="customization" className="flex items-center gap-2" onClick={() => navigate('/admin/customization')}>
-              <Palette className="h-4 w-4" />
-              <span className="hidden sm:inline">Custom</span>
-            </TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 md:grid-cols-8">
+            <TabsTrigger value="dashboard" onClick={() => setActiveTab('dashboard')}>Dashboard</TabsTrigger>
+            <TabsTrigger value="users" onClick={() => setActiveTab('users')}>Users</TabsTrigger>
+            <TabsTrigger value="green" onClick={() => setActiveTab('green')}>Green</TabsTrigger>
+            <TabsTrigger value="roast" onClick={() => setActiveTab('roast')}>Roast</TabsTrigger>
+            <TabsTrigger value="cupping" onClick={() => setActiveTab('cupping')}>Cupping</TabsTrigger>
+            <TabsTrigger value="history" onClick={() => setActiveTab('history')}>History</TabsTrigger>
+            <TabsTrigger value="customization" onClick={() => setActiveTab('customization')}>Customization</TabsTrigger>
+            <TabsTrigger value="welcome-popup" onClick={() => setActiveTab('welcome-popup')}>Welcome Popup</TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
@@ -733,6 +722,11 @@ const Admin = () => {
           {/* Frontend Customization Tab */}
           <TabsContent value="customization" className="space-y-4">
             <FrontendCustomization />
+          </TabsContent>
+
+          {/* Welcome Popup Management Tab */}
+          <TabsContent value="welcome-popup" className="space-y-4">
+            <WelcomePopupManagement />
           </TabsContent>
         </Tabs>
       </div>
