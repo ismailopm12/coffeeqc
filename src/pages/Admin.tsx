@@ -433,79 +433,95 @@ const Admin = () => {
   return (
     <AdminGuard>
       <div className="space-y-6 pb-28 md:pb-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-primary/5 to-accent/5 p-6 rounded-xl border border-primary/10">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Admin Panel</h1>
-            <p className="text-muted-foreground">Manage your coffee quality control system</p>
+            <h1 className="text-3xl font-bold tracking-tight text-primary">Admin Panel</h1>
+            <p className="text-muted-foreground mt-1">Manage your coffee quality control system</p>
           </div>
-          <div className="flex gap-2 mt-4 sm:mt-0">
-            <Button onClick={fetchData} variant="outline">
+          <div className="flex gap-3 mt-4 sm:mt-0">
+            <Button 
+              onClick={fetchData} 
+              variant="outline" 
+              className="border-primary/30 hover:bg-primary/5"
+            >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              <span className="ml-2 hidden sm:inline">Refresh</span>
             </Button>
-            <Button onClick={handleAddNew}>
-              <Plus className="mr-2 h-4 w-4" />
-              Add New
+            <Button 
+              onClick={handleAddNew}
+              className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="ml-2">Add New</span>
             </Button>
           </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-1 bg-muted rounded-lg p-1">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2 bg-muted/50 p-2 rounded-xl">
             <TabsTrigger 
               value="dashboard" 
               onClick={() => setActiveTab('dashboard')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
             >
-              Dashboard
+              <Home className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline">Dashboard</span>
             </TabsTrigger>
             <TabsTrigger 
               value="users" 
               onClick={() => setActiveTab('users')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
             >
-              User Management
+              <Users className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline">User Mgmt</span>
             </TabsTrigger>
             <TabsTrigger 
               value="green" 
               onClick={() => setActiveTab('green')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
             >
-              Green Assessments
+              <Coffee className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline">Green QA</span>
             </TabsTrigger>
             <TabsTrigger 
               value="roast" 
               onClick={() => setActiveTab('roast')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
             >
-              Roast Profiles
+              <Flame className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline">Roast QA</span>
             </TabsTrigger>
             <TabsTrigger 
               value="cupping" 
               onClick={() => setActiveTab('cupping')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
             >
-              Cupping Sessions
+              <FileText className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline">Cupping QA</span>
             </TabsTrigger>
             <TabsTrigger 
               value="history" 
               onClick={() => setActiveTab('history')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
             >
-              Activity History
+              <History className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline">History</span>
             </TabsTrigger>
             <TabsTrigger 
               value="customization" 
               onClick={() => setActiveTab('customization')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
             >
-              Customization
+              <Palette className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline">Customize</span>
             </TabsTrigger>
             <TabsTrigger 
               value="welcome-popup" 
               onClick={() => setActiveTab('welcome-popup')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
             >
-              Welcome Popup
+              <MessageSquare className="h-4 w-4 mr-2" />
+              <span className="hidden md:inline">Popup</span>
             </TabsTrigger>
           </TabsList>
 
@@ -521,64 +537,68 @@ const Admin = () => {
 
           {/* Green Assessments Tab */}
           <TabsContent value="green" className="space-y-4">
-            <Card>
-              <CardHeader>
+            <Card className="border border-accent/20 shadow-sm">
+              <CardHeader className="bg-accent/5 rounded-t-lg">
                 <CardTitle className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <span>Green Coffee Assessments</span>
+                  <div className="flex items-center gap-2">
+                    <Coffee className="h-5 w-5 text-accent" />
+                    <span>Green Coffee Assessments</span>
+                  </div>
                   <form onSubmit={handleSearch} className="flex gap-2 w-full sm:w-auto">
                     <div className="relative flex-1">
-                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input 
                         placeholder="Search assessments..." 
-                        className="pl-8" 
+                        className="pl-10 border-accent/30 focus:border-accent focus:ring-accent" 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
-                    <Button type="submit" variant="outline">
+                    <Button type="submit" variant="outline" className="border-accent/30 hover:bg-accent/10">
                       <Filter className="h-4 w-4" />
                     </Button>
                   </form>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {loading ? (
                   <div className="flex items-center justify-center h-32">
-                    <RefreshCw className="h-6 w-6 animate-spin" />
+                    <RefreshCw className="h-6 w-6 animate-spin text-accent" />
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-muted hover:bg-muted">
-                          <TableHead className="font-bold text-foreground">Lot Number</TableHead>
-                          <TableHead className="font-bold text-foreground">Origin</TableHead>
-                          <TableHead className="font-bold text-foreground">Variety</TableHead>
-                          <TableHead className="font-bold text-foreground">Grade</TableHead>
-                          <TableHead className="font-bold text-foreground">Moisture</TableHead>
-                          <TableHead className="font-bold text-foreground">Date</TableHead>
-                          <TableHead className="text-right font-bold text-foreground">Actions</TableHead>
+                        <TableRow className="bg-muted hover:bg-muted border-b">
+                          <TableHead className="font-bold text-foreground py-4">Lot Number</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Origin</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Variety</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Grade</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Moisture</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Date</TableHead>
+                          <TableHead className="text-right font-bold text-foreground py-4">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {greenAssessments.map((assessment) => (
                           <TableRow key={assessment.id} className="border-b hover:bg-muted/50 transition-colors">
-                            <TableCell className="font-medium py-3">{assessment.lot_number}</TableCell>
-                            <TableCell className="py-3">{assessment.origin}</TableCell>
-                            <TableCell className="py-3">{assessment.variety || '-'}</TableCell>
-                            <TableCell className="py-3">
-                              <Badge variant="secondary">{assessment.grade || 'N/A'}</Badge>
+                            <TableCell className="font-medium py-4">{assessment.lot_number}</TableCell>
+                            <TableCell className="py-4">{assessment.origin}</TableCell>
+                            <TableCell className="py-4">{assessment.variety || '-'}</TableCell>
+                            <TableCell className="py-4">
+                              <Badge variant="secondary" className="bg-coffee-green/10 text-coffee-green">{assessment.grade || 'N/A'}</Badge>
                             </TableCell>
-                            <TableCell className="py-3">{assessment.moisture_content || '-'}</TableCell>
-                            <TableCell className="py-3">{assessment.assessment_date ? new Date(assessment.assessment_date).toLocaleDateString() : '-'}</TableCell>
-                            <TableCell className="text-right py-3">
+                            <TableCell className="py-4">{assessment.moisture_content || '-'}</TableCell>
+                            <TableCell className="py-4">{assessment.assessment_date ? new Date(assessment.assessment_date).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell className="text-right py-4">
                               <div className="flex justify-end gap-2">
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">
                                   <Eye className="h-4 w-4" />
                                 </Button>
                                 <Button 
                                   variant="outline" 
                                   size="sm"
+                                  className="border-accent/30 hover:bg-accent/10"
                                   onClick={() => handleEditGreenAssessment(assessment)}
                                 >
                                   <Edit className="h-4 w-4" />
@@ -586,6 +606,7 @@ const Admin = () => {
                                 <Button 
                                   variant="outline" 
                                   size="sm"
+                                  className="border-destructive/30 hover:bg-destructive/10"
                                   onClick={() => assessment.id && handleDeleteGreenAssessment(assessment.id)}
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -604,60 +625,68 @@ const Admin = () => {
 
           {/* Roast Profiles Tab */}
           <TabsContent value="roast" className="space-y-4">
-            <Card>
-              <CardHeader>
+            <Card className="border border-accent/20 shadow-sm">
+              <CardHeader className="bg-accent/5 rounded-t-lg">
                 <CardTitle className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <span>Roast Profiles</span>
+                  <div className="flex items-center gap-2">
+                    <Flame className="h-5 w-5 text-accent" />
+                    <span>Roast Profiles</span>
+                  </div>
                   <form onSubmit={handleSearch} className="flex gap-2 w-full sm:w-auto">
                     <div className="relative flex-1">
-                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input 
                         placeholder="Search profiles..." 
-                        className="pl-8" 
+                        className="pl-10 border-accent/30 focus:border-accent focus:ring-accent" 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
-                    <Button type="submit" variant="outline">
+                    <Button type="submit" variant="outline" className="border-accent/30 hover:bg-accent/10">
                       <Filter className="h-4 w-4" />
                     </Button>
                   </form>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {loading ? (
                   <div className="flex items-center justify-center h-32">
-                    <RefreshCw className="h-6 w-6 animate-spin" />
+                    <RefreshCw className="h-6 w-6 animate-spin text-accent" />
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-muted hover:bg-muted">
-                          <TableHead className="font-bold text-foreground">Profile Name</TableHead>
-                          <TableHead className="font-bold text-foreground">Batch Size</TableHead>
-                          <TableHead className="font-bold text-foreground">Roast Level</TableHead>
-                          <TableHead className="font-bold text-foreground">Total Time</TableHead>
-                          <TableHead className="font-bold text-foreground">Created</TableHead>
-                          <TableHead className="text-right font-bold text-foreground">Actions</TableHead>
+                        <TableRow className="bg-muted hover:bg-muted border-b">
+                          <TableHead className="font-bold text-foreground py-4">Profile Name</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Batch Size</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Roast Level</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Total Time</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Created</TableHead>
+                          <TableHead className="text-right font-bold text-foreground py-4">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {roastProfiles.map((profile) => (
                           <TableRow key={profile.id} className="border-b hover:bg-muted/50 transition-colors">
-                            <TableCell className="font-medium py-3">{profile.profile_name}</TableCell>
-                            <TableCell className="py-3">{profile.batch_size || '-'}</TableCell>
-                            <TableCell className="py-3">{profile.roast_level || '-'}</TableCell>
-                            <TableCell className="py-3">{profile.total_roast_time ? `${profile.total_roast_time}s` : '-'}</TableCell>
-                            <TableCell className="py-3">{profile.created_at ? new Date(profile.created_at).toLocaleDateString() : '-'}</TableCell>
-                            <TableCell className="text-right py-3">
+                            <TableCell className="font-medium py-4">{profile.profile_name}</TableCell>
+                            <TableCell className="py-4">{profile.batch_size || '-'}</TableCell>
+                            <TableCell className="py-4">
+                              <Badge variant="secondary" className="bg-coffee-roast/10 text-coffee-roast">
+                                {profile.roast_level || 'N/A'}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="py-4">{profile.total_roast_time ? `${profile.total_roast_time}s` : '-'}</TableCell>
+                            <TableCell className="py-4">{profile.created_at ? new Date(profile.created_at).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell className="text-right py-4">
                               <div className="flex justify-end gap-2">
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">
                                   <Eye className="h-4 w-4" />
                                 </Button>
                                 <Button 
                                   variant="outline" 
                                   size="sm"
+                                  className="border-accent/30 hover:bg-accent/10"
                                   onClick={() => handleEditRoastProfile(profile)}
                                 >
                                   <Edit className="h-4 w-4" />
@@ -665,6 +694,7 @@ const Admin = () => {
                                 <Button 
                                   variant="outline" 
                                   size="sm"
+                                  className="border-destructive/30 hover:bg-destructive/10"
                                   onClick={() => profile.id && handleDeleteRoastProfile(profile.id)}
                                 >
                                   <Trash2 className="h-4 w-4" />
@@ -683,62 +713,66 @@ const Admin = () => {
 
           {/* Cupping Sessions Tab */}
           <TabsContent value="cupping" className="space-y-4">
-            <Card>
-              <CardHeader>
+            <Card className="border border-accent/20 shadow-sm">
+              <CardHeader className="bg-accent/5 rounded-t-lg">
                 <CardTitle className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <span>Cupping Sessions</span>
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-accent" />
+                    <span>Cupping Sessions</span>
+                  </div>
                   <form onSubmit={handleSearch} className="flex gap-2 w-full sm:w-auto">
                     <div className="relative flex-1">
-                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input 
                         placeholder="Search sessions..." 
-                        className="pl-8" 
+                        className="pl-10 border-accent/30 focus:border-accent focus:ring-accent" 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
-                    <Button type="submit" variant="outline">
+                    <Button type="submit" variant="outline" className="border-accent/30 hover:bg-accent/10">
                       <Filter className="h-4 w-4" />
                     </Button>
                   </form>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-0">
                 {loading ? (
                   <div className="flex items-center justify-center h-32">
-                    <RefreshCw className="h-6 w-6 animate-spin" />
+                    <RefreshCw className="h-6 w-6 animate-spin text-accent" />
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow className="bg-muted hover:bg-muted">
-                          <TableHead className="font-bold text-foreground">Session Name</TableHead>
-                          <TableHead className="font-bold text-foreground">Cupper</TableHead>
-                          <TableHead className="font-bold text-foreground">Date</TableHead>
-                          <TableHead className="font-bold text-foreground">Evaluations</TableHead>
-                          <TableHead className="font-bold text-foreground">Avg Score</TableHead>
-                          <TableHead className="font-bold text-foreground">Created</TableHead>
-                          <TableHead className="text-right font-bold text-foreground">Actions</TableHead>
+                        <TableRow className="bg-muted hover:bg-muted border-b">
+                          <TableHead className="font-bold text-foreground py-4">Session Name</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Cupper</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Date</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Evaluations</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Avg Score</TableHead>
+                          <TableHead className="font-bold text-foreground py-4">Created</TableHead>
+                          <TableHead className="text-right font-bold text-foreground py-4">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {cuppingSessions.map((session) => (
                           <TableRow key={session.id} className="border-b hover:bg-muted/50 transition-colors">
-                            <TableCell className="font-medium py-3">{session.session_name}</TableCell>
-                            <TableCell className="py-3">{session.cupper_name || '-'}</TableCell>
-                            <TableCell className="py-3">{session.cupping_date ? new Date(session.cupping_date).toLocaleDateString() : '-'}</TableCell>
-                            <TableCell className="py-3">-</TableCell>
-                            <TableCell className="py-3">-</TableCell>
-                            <TableCell className="py-3">{session.created_at ? new Date(session.created_at).toLocaleDateString() : '-'}</TableCell>
-                            <TableCell className="text-right py-3">
+                            <TableCell className="font-medium py-4">{session.session_name}</TableCell>
+                            <TableCell className="py-4">{session.cupper_name || '-'}</TableCell>
+                            <TableCell className="py-4">{session.cupping_date ? new Date(session.cupping_date).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell className="py-4">-</TableCell>
+                            <TableCell className="py-4">-</TableCell>
+                            <TableCell className="py-4">{session.created_at ? new Date(session.created_at).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell className="text-right py-4">
                               <div className="flex justify-end gap-2">
-                                <Button variant="outline" size="sm">
+                                <Button variant="outline" size="sm" className="border-accent/30 hover:bg-accent/10">
                                   <Eye className="h-4 w-4" />
                                 </Button>
                                 <Button 
                                   variant="outline" 
                                   size="sm"
+                                  className="border-accent/30 hover:bg-accent/10"
                                   onClick={() => handleEditCuppingSession(session)}
                                 >
                                   <Edit className="h-4 w-4" />
@@ -746,6 +780,7 @@ const Admin = () => {
                                 <Button 
                                   variant="outline" 
                                   size="sm"
+                                  className="border-destructive/30 hover:bg-destructive/10"
                                   onClick={() => session.id && handleDeleteCuppingSession(session.id)}
                                 >
                                   <Trash2 className="h-4 w-4" />
