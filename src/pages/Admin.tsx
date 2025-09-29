@@ -19,7 +19,8 @@ import {
   RefreshCw,
   Home,
   Users,
-  Palette
+  Palette,
+  History
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -28,9 +29,13 @@ import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminGuard from "@/components/admin/AdminGuard";
 import UserManagement from "@/components/admin/UserManagement";
 import FrontendCustomization from "@/components/admin/FrontendCustomization";
+import FrontendHistory from "@/components/admin/FrontendHistory";
 import { EditGreenAssessmentForm } from "@/components/admin/EditGreenAssessmentForm";
 import { EditRoastProfileForm } from "@/components/admin/EditRoastProfileForm";
 import { EditCuppingSessionForm } from "@/components/admin/EditCuppingSessionForm";
+import { GreenAssessmentForm } from "@/components/green/GreenAssessmentForm";
+import { RoastProfileForm } from "@/components/roast/RoastProfileForm";
+import { CuppingSessionForm } from "@/components/cupping/CuppingSessionForm";
 import { useNavigate, useLocation } from 'react-router-dom';
 
 type GreenAssessment = Database['public']['Tables']['green_assessments']['Row'];
@@ -50,6 +55,7 @@ const Admin = () => {
     if (path.includes('/green')) return 'green';
     if (path.includes('/roast')) return 'roast';
     if (path.includes('/cupping')) return 'cupping';
+    if (path.includes('/history')) return 'history';
     if (path.includes('/customization')) return 'customization';
     return 'dashboard'; // default
   });
@@ -59,7 +65,12 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   
-  // State for edit forms
+  // State for creating new records
+  const [creatingGreenAssessment, setCreatingGreenAssessment] = useState(false);
+  const [creatingRoastProfile, setCreatingRoastProfile] = useState(false);
+  const [creatingCuppingSession, setCreatingCuppingSession] = useState(false);
+  
+  // State for editing records
   const [editingGreenAssessment, setEditingGreenAssessment] = useState<GreenAssessment | null>(null);
   const [editingRoastProfile, setEditingRoastProfile] = useState<RoastProfile | null>(null);
   const [editingCuppingSession, setEditingCuppingSession] = useState<CuppingSession | null>(null);
@@ -89,6 +100,9 @@ const Admin = () => {
           break;
         case "cupping":
           await fetchCuppingSessions();
+          break;
+        case "history":
+          // History tab has its own data fetching
           break;
       }
     } catch (error) {
@@ -279,6 +293,22 @@ const Admin = () => {
     setEditingCuppingSession(session);
   };
 
+  // Handle create success
+  const handleCreateSuccess = () => {
+    setCreatingGreenAssessment(false);
+    setCreatingRoastProfile(false);
+    setCreatingCuppingSession(false);
+    fetchData();
+  };
+
+  // Handle create cancel
+  const handleCreateCancel = () => {
+    setCreatingGreenAssessment(false);
+    setCreatingRoastProfile(false);
+    setCreatingCuppingSession(false);
+  };
+
+  // Handle edit success
   const handleEditSuccess = () => {
     setEditingGreenAssessment(null);
     setEditingRoastProfile(null);
@@ -286,13 +316,73 @@ const Admin = () => {
     fetchData();
   };
 
+  // Handle edit cancel
+  const handleEditCancel = () => {
+    setEditingGreenAssessment(null);
+    setEditingRoastProfile(null);
+    setEditingCuppingSession(null);
+  };
+
+  // Handle add new button click
+  const handleAddNew = () => {
+    switch (activeTab) {
+      case 'green':
+        setCreatingGreenAssessment(true);
+        break;
+      case 'roast':
+        setCreatingRoastProfile(true);
+        break;
+      case 'cupping':
+        setCreatingCuppingSession(true);
+        break;
+      default:
+        // Do nothing for other tabs
+        break;
+    }
+  };
+
+  // Render create forms
+  if (creatingGreenAssessment) {
+    return (
+      <div className="space-y-6">
+        <GreenAssessmentForm
+          onSuccess={handleCreateSuccess}
+          onCancel={handleCreateCancel}
+        />
+      </div>
+    );
+  }
+
+  if (creatingRoastProfile) {
+    return (
+      <div className="space-y-6">
+        <RoastProfileForm
+          onSuccess={handleCreateSuccess}
+          onCancel={handleCreateCancel}
+        />
+      </div>
+    );
+  }
+
+  if (creatingCuppingSession) {
+    return (
+      <div className="space-y-6">
+        <CuppingSessionForm
+          onSuccess={handleCreateSuccess}
+          onCancel={handleCreateCancel}
+        />
+      </div>
+    );
+  }
+
+  // Render edit forms
   if (editingGreenAssessment) {
     return (
       <div className="space-y-6">
         <EditGreenAssessmentForm
           assessment={editingGreenAssessment}
           onSuccess={handleEditSuccess}
-          onCancel={() => setEditingGreenAssessment(null)}
+          onCancel={handleEditCancel}
         />
       </div>
     );
@@ -304,7 +394,7 @@ const Admin = () => {
         <EditRoastProfileForm
           profile={editingRoastProfile}
           onSuccess={handleEditSuccess}
-          onCancel={() => setEditingRoastProfile(null)}
+          onCancel={handleEditCancel}
         />
       </div>
     );
@@ -316,7 +406,7 @@ const Admin = () => {
         <EditCuppingSessionForm
           session={editingCuppingSession}
           onSuccess={handleEditSuccess}
-          onCancel={() => setEditingCuppingSession(null)}
+          onCancel={handleEditCancel}
         />
       </div>
     );
@@ -343,7 +433,7 @@ const Admin = () => {
             <Button onClick={fetchData} variant="outline">
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>
-            <Button>
+            <Button onClick={handleAddNew}>
               <Plus className="mr-2 h-4 w-4" />
               Add New
             </Button>
@@ -351,7 +441,7 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="dashboard" className="flex items-center gap-2" onClick={() => navigate('/admin')}>
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Dashboard</span>
@@ -371,6 +461,10 @@ const Admin = () => {
             <TabsTrigger value="cupping" className="flex items-center gap-2" onClick={() => navigate('/admin/cupping')}>
               <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Cupping</span>
+            </TabsTrigger>
+            <TabsTrigger value="history" className="flex items-center gap-2" onClick={() => navigate('/admin/history')}>
+              <History className="h-4 w-4" />
+              <span className="hidden sm:inline">History</span>
             </TabsTrigger>
             <TabsTrigger value="customization" className="flex items-center gap-2" onClick={() => navigate('/admin/customization')}>
               <Palette className="h-4 w-4" />
@@ -629,6 +723,11 @@ const Admin = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Frontend History Tab */}
+          <TabsContent value="history" className="space-y-4">
+            <FrontendHistory />
           </TabsContent>
 
           {/* Frontend Customization Tab */}
