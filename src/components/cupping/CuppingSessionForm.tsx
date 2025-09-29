@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { FileText, Save, Calendar } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { isAdminUser } from '@/utils/adminUtils';
 
 interface CuppingSessionFormProps {
   onSuccess: () => void;
@@ -44,21 +45,47 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
     setLoading(true);
 
     try {
+      // Format the date properly for the database
+      const formattedDate = formData.cupping_date 
+        ? new Date(formData.cupping_date).toISOString() 
+        : new Date().toISOString();
+
+      // Check if user is admin
+      const isAdmin = isAdminUser(user);
+      
+      // Prepare the data to insert
+      const sessionData = {
+        user_id: user.id,
+        session_name: formData.session_name,
+        cupper_name: formData.cupper_name || null,
+        cupping_date: formattedDate,
+        notes: formData.notes || null,
+        // Additional session-level profile options
+        session_type: formData.session_type || null,
+        location: formData.location || null,
+        environmental_conditions: formData.environmental_conditions || null
+      };
+
+      console.log('Creating cupping session with data:', sessionData);
+      console.log('User is admin:', isAdmin);
+
+      // For admins, we might need to bypass RLS or handle differently
+      // But for now, let's try the regular insert first
       const { error } = await supabase
         .from('cupping_sessions')
-        .insert({
-          user_id: user.id,
-          session_name: formData.session_name,
-          cupper_name: formData.cupper_name || null,
-          cupping_date: formData.cupping_date,
-          notes: formData.notes || null,
-          // Additional session-level profile options
-          session_type: formData.session_type || null,
-          location: formData.location || null,
-          environmental_conditions: formData.environmental_conditions || null
-        });
+        .insert(sessionData);
 
-      if (error) throw error;
+      // If there's an error and the user is an admin, we might need to handle it differently
+      if (error) {
+        console.log('Insert error:', error);
+        // Try again with admin privileges if user is admin
+        if (isAdmin) {
+          console.log('User is admin, trying with admin privileges');
+          // For admins, we might need to use a different approach
+          // But for now, let's just show the error
+        }
+        throw error;
+      }
 
       toast({
         title: "Success",
@@ -66,6 +93,7 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
       });
       onSuccess();
     } catch (error) {
+      console.error('Error creating cupping session:', error);
       toast({
         title: "Error",
         description: "Failed to create cupping session: " + (error as Error).message,
