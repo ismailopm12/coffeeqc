@@ -219,12 +219,12 @@ export default function Profile() {
                 <Camera className="h-4 w-4" />
               </Button>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               {editing ? (
                 <Input
                   value={profile.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="text-2xl font-bold text-primary mb-2"
+                  className="text-2xl font-bold text-primary mb-2 w-full"
                 />
               ) : (
                 <h3 className="font-bold text-2xl text-primary">{profile.name}</h3>
@@ -233,7 +233,7 @@ export default function Profile() {
                 <Input
                   value={profile.position}
                   onChange={(e) => handleInputChange('position', e.target.value)}
-                  className="text-muted-foreground"
+                  className="text-muted-foreground w-full"
                 />
               ) : (
                 <p className="text-muted-foreground">{profile.position}</p>
@@ -251,30 +251,30 @@ export default function Profile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-muted-foreground" />
-                <div>
+                <Mail className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                <div className="w-full">
                   <p className="text-sm text-muted-foreground">Email Address</p>
                   {editing ? (
                     <Input
                       value={profile.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="font-medium"
+                      className="font-medium w-full"
                     />
                   ) : (
-                    <p className="font-medium">{profile.email}</p>
+                    <p className="font-medium break-all">{profile.email}</p>
                   )}
                 </div>
               </div>
               
               <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-muted-foreground" />
-                <div>
+                <Phone className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                <div className="w-full">
                   <p className="text-sm text-muted-foreground">Phone Number</p>
                   {editing ? (
                     <Input
                       value={profile.phone}
                       onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="font-medium"
+                      className="font-medium w-full"
                     />
                   ) : (
                     <p className="font-medium">{profile.phone || '+1 (555) 123-4567'}</p>
@@ -283,14 +283,14 @@ export default function Profile() {
               </div>
               
               <div className="flex items-center gap-3">
-                <MapPin className="h-5 w-5 text-muted-foreground" />
-                <div>
+                <MapPin className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                <div className="w-full">
                   <p className="text-sm text-muted-foreground">Location</p>
                   {editing ? (
                     <Input
                       value={profile.location}
                       onChange={(e) => handleInputChange('location', e.target.value)}
-                      className="font-medium"
+                      className="font-medium w-full"
                     />
                   ) : (
                     <p className="font-medium">{profile.location || 'Seattle, WA'}</p>
@@ -299,8 +299,8 @@ export default function Profile() {
               </div>
               
               <div className="flex items-center gap-3">
-                <Calendar className="h-5 w-5 text-muted-foreground" />
-                <div>
+                <Calendar className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                <div className="w-full">
                   <p className="text-sm text-muted-foreground">Member Since</p>
                   <p className="font-medium">
                     {new Date(profile.member_since).toLocaleDateString('en-US', { 
@@ -314,14 +314,14 @@ export default function Profile() {
             
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <Coffee className="h-5 w-5 text-muted-foreground" />
-                <div>
+                <Coffee className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                <div className="w-full">
                   <p className="text-sm text-muted-foreground">Specialties</p>
                   {editing ? (
                     <Input
                       value={profile.specialties}
                       onChange={(e) => handleInputChange('specialties', e.target.value)}
-                      className="font-medium"
+                      className="font-medium w-full"
                     />
                   ) : (
                     <p className="font-medium">{profile.specialties || 'African Origins, Espresso Blends'}</p>
@@ -330,14 +330,14 @@ export default function Profile() {
               </div>
               
               <div className="flex items-center gap-3">
-                <AwardIcon className="h-5 w-5 text-muted-foreground" />
-                <div>
+                <AwardIcon className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                <div className="w-full">
                   <p className="text-sm text-muted-foreground">Certifications</p>
                   {editing ? (
                     <Input
                       value={profile.certifications}
                       onChange={(e) => handleInputChange('certifications', e.target.value)}
-                      className="font-medium"
+                      className="font-medium w-full"
                     />
                   ) : (
                     <p className="font-medium">{profile.certifications || 'Q Grader, SCA Coffee Taster'}</p>
@@ -346,14 +346,14 @@ export default function Profile() {
               </div>
               
               <div className="flex items-center gap-3">
-                <Trophy className="h-5 w-5 text-muted-foreground" />
-                <div>
+                <Trophy className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                <div className="w-full">
                   <p className="text-sm text-muted-foreground">Awards</p>
                   {editing ? (
                     <Input
                       value={profile.awards}
                       onChange={(e) => handleInputChange('awards', e.target.value)}
-                      className="font-medium"
+                      className="font-medium w-full"
                     />
                   ) : (
                     <p className="font-medium">{profile.awards || 'Best Cupper 2023, Roaster\'s Choice'}</p>
@@ -362,14 +362,14 @@ export default function Profile() {
               </div>
               
               <div className="flex items-center gap-3">
-                <Target className="h-5 w-5 text-muted-foreground" />
-                <div>
+                <Target className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                <div className="w-full">
                   <p className="text-sm text-muted-foreground">Focus Areas</p>
                   {editing ? (
                     <Input
                       value={profile.focus_areas}
                       onChange={(e) => handleInputChange('focus_areas', e.target.value)}
-                      className="font-medium"
+                      className="font-medium w-full"
                     />
                   ) : (
                     <p className="font-medium">{profile.focus_areas || 'Quality Assurance, Training'}</p>

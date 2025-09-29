@@ -54,7 +54,7 @@ const MobileBottomNav = () => {
     }
   ];
 
-  // Define navigation items for admin users (admin-only view)
+  // Define navigation items for admin users (admin-only view) with more professional labels
   const adminNavItems = [
     {
       path: "/",
@@ -70,25 +70,25 @@ const MobileBottomNav = () => {
     },
     {
       path: "/admin/users",
-      label: "Users",
+      label: "User Mgmt",
       icon: User,
       color: "text-blue-500"
     },
     {
       path: "/admin/green",
-      label: "Green",
+      label: "Green QA",
       icon: Coffee,
       color: "text-coffee-green"
     },
     {
       path: "/admin/roast",
-      label: "Roast",
+      label: "Roast QA",
       icon: Flame,
       color: "text-coffee-roast"
     },
     {
       path: "/admin/cupping",
-      label: "Cupping",
+      label: "Cupping QA",
       icon: FileText,
       color: "text-accent"
     }
@@ -175,7 +175,12 @@ const MobileBottomNav = () => {
             )}
           >
             <Shield className="h-3 w-3" />
-            {isAdminMode ? "Exit Admin" : "Admin Mode"}
+            <span className="hidden sm:inline">
+              {isAdminMode ? "Exit Admin" : "Admin Mode"}
+            </span>
+            <span className="sm:hidden">
+              {isAdminMode ? "Exit" : "Admin"}
+            </span>
           </button>
         </div>
       )}

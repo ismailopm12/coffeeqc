@@ -450,15 +450,63 @@ const Admin = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 md:grid-cols-8">
-            <TabsTrigger value="dashboard" onClick={() => setActiveTab('dashboard')}>Dashboard</TabsTrigger>
-            <TabsTrigger value="users" onClick={() => setActiveTab('users')}>Users</TabsTrigger>
-            <TabsTrigger value="green" onClick={() => setActiveTab('green')}>Green</TabsTrigger>
-            <TabsTrigger value="roast" onClick={() => setActiveTab('roast')}>Roast</TabsTrigger>
-            <TabsTrigger value="cupping" onClick={() => setActiveTab('cupping')}>Cupping</TabsTrigger>
-            <TabsTrigger value="history" onClick={() => setActiveTab('history')}>History</TabsTrigger>
-            <TabsTrigger value="customization" onClick={() => setActiveTab('customization')}>Customization</TabsTrigger>
-            <TabsTrigger value="welcome-popup" onClick={() => setActiveTab('welcome-popup')}>Welcome Popup</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-1 bg-muted rounded-lg p-1">
+            <TabsTrigger 
+              value="dashboard" 
+              onClick={() => setActiveTab('dashboard')}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+            >
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger 
+              value="users" 
+              onClick={() => setActiveTab('users')}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+            >
+              User Management
+            </TabsTrigger>
+            <TabsTrigger 
+              value="green" 
+              onClick={() => setActiveTab('green')}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+            >
+              Green Assessments
+            </TabsTrigger>
+            <TabsTrigger 
+              value="roast" 
+              onClick={() => setActiveTab('roast')}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+            >
+              Roast Profiles
+            </TabsTrigger>
+            <TabsTrigger 
+              value="cupping" 
+              onClick={() => setActiveTab('cupping')}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+            >
+              Cupping Sessions
+            </TabsTrigger>
+            <TabsTrigger 
+              value="history" 
+              onClick={() => setActiveTab('history')}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+            >
+              Activity History
+            </TabsTrigger>
+            <TabsTrigger 
+              value="customization" 
+              onClick={() => setActiveTab('customization')}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+            >
+              Customization
+            </TabsTrigger>
+            <TabsTrigger 
+              value="welcome-popup" 
+              onClick={() => setActiveTab('welcome-popup')}
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-md"
+            >
+              Welcome Popup
+            </TabsTrigger>
           </TabsList>
 
           {/* Dashboard Tab */}
@@ -502,28 +550,28 @@ const Admin = () => {
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow>
-                          <TableHead>Lot Number</TableHead>
-                          <TableHead>Origin</TableHead>
-                          <TableHead>Variety</TableHead>
-                          <TableHead>Grade</TableHead>
-                          <TableHead>Moisture</TableHead>
-                          <TableHead>Date</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
+                        <TableRow className="bg-muted hover:bg-muted">
+                          <TableHead className="font-bold text-foreground">Lot Number</TableHead>
+                          <TableHead className="font-bold text-foreground">Origin</TableHead>
+                          <TableHead className="font-bold text-foreground">Variety</TableHead>
+                          <TableHead className="font-bold text-foreground">Grade</TableHead>
+                          <TableHead className="font-bold text-foreground">Moisture</TableHead>
+                          <TableHead className="font-bold text-foreground">Date</TableHead>
+                          <TableHead className="text-right font-bold text-foreground">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {greenAssessments.map((assessment) => (
-                          <TableRow key={assessment.id}>
-                            <TableCell className="font-medium">{assessment.lot_number}</TableCell>
-                            <TableCell>{assessment.origin}</TableCell>
-                            <TableCell>{assessment.variety || '-'}</TableCell>
-                            <TableCell>
-                              <Badge>{assessment.grade || 'N/A'}</Badge>
+                          <TableRow key={assessment.id} className="border-b hover:bg-muted/50 transition-colors">
+                            <TableCell className="font-medium py-3">{assessment.lot_number}</TableCell>
+                            <TableCell className="py-3">{assessment.origin}</TableCell>
+                            <TableCell className="py-3">{assessment.variety || '-'}</TableCell>
+                            <TableCell className="py-3">
+                              <Badge variant="secondary">{assessment.grade || 'N/A'}</Badge>
                             </TableCell>
-                            <TableCell>{assessment.moisture_content || '-'}</TableCell>
-                            <TableCell>{assessment.assessment_date ? new Date(assessment.assessment_date).toLocaleDateString() : '-'}</TableCell>
-                            <TableCell className="text-right">
+                            <TableCell className="py-3">{assessment.moisture_content || '-'}</TableCell>
+                            <TableCell className="py-3">{assessment.assessment_date ? new Date(assessment.assessment_date).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell className="text-right py-3">
                               <div className="flex justify-end gap-2">
                                 <Button variant="outline" size="sm">
                                   <Eye className="h-4 w-4" />
@@ -585,24 +633,24 @@ const Admin = () => {
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow>
-                          <TableHead>Profile Name</TableHead>
-                          <TableHead>Batch Size</TableHead>
-                          <TableHead>Roast Level</TableHead>
-                          <TableHead>Total Time</TableHead>
-                          <TableHead>Created</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
+                        <TableRow className="bg-muted hover:bg-muted">
+                          <TableHead className="font-bold text-foreground">Profile Name</TableHead>
+                          <TableHead className="font-bold text-foreground">Batch Size</TableHead>
+                          <TableHead className="font-bold text-foreground">Roast Level</TableHead>
+                          <TableHead className="font-bold text-foreground">Total Time</TableHead>
+                          <TableHead className="font-bold text-foreground">Created</TableHead>
+                          <TableHead className="text-right font-bold text-foreground">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {roastProfiles.map((profile) => (
-                          <TableRow key={profile.id}>
-                            <TableCell className="font-medium">{profile.profile_name}</TableCell>
-                            <TableCell>{profile.batch_size || '-'}</TableCell>
-                            <TableCell>{profile.roast_level || '-'}</TableCell>
-                            <TableCell>{profile.total_roast_time ? `${profile.total_roast_time}s` : '-'}</TableCell>
-                            <TableCell>{profile.created_at ? new Date(profile.created_at).toLocaleDateString() : '-'}</TableCell>
-                            <TableCell className="text-right">
+                          <TableRow key={profile.id} className="border-b hover:bg-muted/50 transition-colors">
+                            <TableCell className="font-medium py-3">{profile.profile_name}</TableCell>
+                            <TableCell className="py-3">{profile.batch_size || '-'}</TableCell>
+                            <TableCell className="py-3">{profile.roast_level || '-'}</TableCell>
+                            <TableCell className="py-3">{profile.total_roast_time ? `${profile.total_roast_time}s` : '-'}</TableCell>
+                            <TableCell className="py-3">{profile.created_at ? new Date(profile.created_at).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell className="text-right py-3">
                               <div className="flex justify-end gap-2">
                                 <Button variant="outline" size="sm">
                                   <Eye className="h-4 w-4" />
@@ -664,26 +712,26 @@ const Admin = () => {
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader>
-                        <TableRow>
-                          <TableHead>Session Name</TableHead>
-                          <TableHead>Cupper</TableHead>
-                          <TableHead>Date</TableHead>
-                          <TableHead>Evaluations</TableHead>
-                          <TableHead>Avg Score</TableHead>
-                          <TableHead>Created</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
+                        <TableRow className="bg-muted hover:bg-muted">
+                          <TableHead className="font-bold text-foreground">Session Name</TableHead>
+                          <TableHead className="font-bold text-foreground">Cupper</TableHead>
+                          <TableHead className="font-bold text-foreground">Date</TableHead>
+                          <TableHead className="font-bold text-foreground">Evaluations</TableHead>
+                          <TableHead className="font-bold text-foreground">Avg Score</TableHead>
+                          <TableHead className="font-bold text-foreground">Created</TableHead>
+                          <TableHead className="text-right font-bold text-foreground">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {cuppingSessions.map((session) => (
-                          <TableRow key={session.id}>
-                            <TableCell className="font-medium">{session.session_name}</TableCell>
-                            <TableCell>{session.cupper_name || '-'}</TableCell>
-                            <TableCell>{session.cupping_date ? new Date(session.cupping_date).toLocaleDateString() : '-'}</TableCell>
-                            <TableCell>-</TableCell>
-                            <TableCell>-</TableCell>
-                            <TableCell>{session.created_at ? new Date(session.created_at).toLocaleDateString() : '-'}</TableCell>
-                            <TableCell className="text-right">
+                          <TableRow key={session.id} className="border-b hover:bg-muted/50 transition-colors">
+                            <TableCell className="font-medium py-3">{session.session_name}</TableCell>
+                            <TableCell className="py-3">{session.cupper_name || '-'}</TableCell>
+                            <TableCell className="py-3">{session.cupping_date ? new Date(session.cupping_date).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell className="py-3">-</TableCell>
+                            <TableCell className="py-3">-</TableCell>
+                            <TableCell className="py-3">{session.created_at ? new Date(session.created_at).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell className="text-right py-3">
                               <div className="flex justify-end gap-2">
                                 <Button variant="outline" size="sm">
                                   <Eye className="h-4 w-4" />
