@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { Coffee, Flame, FileText, User, Shield, Home, Calculator, Thermometer, FileText as FileTextIcon, Menu } from "lucide-react";
+import { Coffee, Flame, FileText, User, Shield, Home, Calculator } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isAdminUser } from '@/utils/adminUtils';
 import { useState, useEffect } from 'react';
@@ -133,16 +133,13 @@ const MobileBottomNav = () => {
             </Link>
           );
         })}
-      </div>
-      
-      {/* Second row for calculators - only shown for non-admin users */}
-      {!isAdminMode && (
-        <div className="flex items-center justify-around px-1 py-2 border-t border-border">
+        {/* Calculator menu icon for non-admin users */}
+        {!isAdminMode && (
           <Link
             to="/calculator"
             className={cn(
               "flex flex-col items-center justify-center px-2 py-2 min-w-0 flex-1 rounded-lg transition-all",
-              location.pathname === "/calculator"
+              location.pathname.startsWith("/calculator")
                 ? "bg-secondary shadow-warm" 
                 : "hover:bg-secondary/50"
             )}
@@ -150,70 +147,20 @@ const MobileBottomNav = () => {
             <Calculator 
               className={cn(
                 "h-5 w-5 mb-1 transition-colors",
-                location.pathname === "/calculator" ? "text-primary" : "text-muted-foreground"
+                location.pathname.startsWith("/calculator") ? "text-primary" : "text-muted-foreground"
               )} 
             />
             <span 
               className={cn(
                 "text-xs font-medium transition-colors text-center",
-                location.pathname === "/calculator" ? "text-foreground" : "text-muted-foreground"
+                location.pathname.startsWith("/calculator") ? "text-foreground" : "text-muted-foreground"
               )}
             >
-              Quality
+              Calculator
             </span>
           </Link>
-          
-          <Link
-            to="/roast-calculator"
-            className={cn(
-              "flex flex-col items-center justify-center px-2 py-2 min-w-0 flex-1 rounded-lg transition-all",
-              location.pathname === "/roast-calculator"
-                ? "bg-secondary shadow-warm" 
-                : "hover:bg-secondary/50"
-            )}
-          >
-            <Thermometer 
-              className={cn(
-                "h-5 w-5 mb-1 transition-colors",
-                location.pathname === "/roast-calculator" ? "text-coffee-roast" : "text-muted-foreground"
-              )} 
-            />
-            <span 
-              className={cn(
-                "text-xs font-medium transition-colors text-center",
-                location.pathname === "/roast-calculator" ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              Roast
-            </span>
-          </Link>
-          
-          <Link
-            to="/cupping-calculator"
-            className={cn(
-              "flex flex-col items-center justify-center px-2 py-2 min-w-0 flex-1 rounded-lg transition-all",
-              location.pathname === "/cupping-calculator"
-                ? "bg-secondary shadow-warm" 
-                : "hover:bg-secondary/50"
-            )}
-          >
-            <FileTextIcon 
-              className={cn(
-                "h-5 w-5 mb-1 transition-colors",
-                location.pathname === "/cupping-calculator" ? "text-accent" : "text-muted-foreground"
-              )} 
-            />
-            <span 
-              className={cn(
-                "text-xs font-medium transition-colors text-center",
-                location.pathname === "/cupping-calculator" ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              Cupping
-            </span>
-          </Link>
-        </div>
-      )}
+        )}
+      </div>
       
       {/* Admin toggle button - only shown for admin users */}
       {isAdmin && (
