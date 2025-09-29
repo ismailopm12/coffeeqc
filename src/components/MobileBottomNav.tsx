@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { Coffee, Flame, FileText, User, Shield, Home, Calculator } from "lucide-react";
+import { Coffee, Flame, FileText, User, Shield, Home, Calculator, Users, Palette, History, MessageSquare, BarChart3, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isAdminUser } from '@/utils/adminUtils';
 import { useState, useEffect } from 'react';
@@ -54,24 +54,18 @@ const MobileBottomNav = () => {
     }
   ];
 
-  // Define navigation items for admin users (admin-only view) with more professional labels
+  // Define navigation items for admin users (admin-only view) with all admin menu items
   const adminNavItems = [
-    {
-      path: "/",
-      label: "Home",
-      icon: Home,
-      color: "text-primary"
-    },
     {
       path: "/admin",
       label: "Dashboard",
-      icon: Home,
+      icon: BarChart3,
       color: "text-primary"
     },
     {
       path: "/admin/users",
-      label: "User Mgmt",
-      icon: User,
+      label: "Users",
+      icon: Users,
       color: "text-blue-500"
     },
     {
@@ -91,6 +85,24 @@ const MobileBottomNav = () => {
       label: "Cupping QA",
       icon: FileText,
       color: "text-accent"
+    },
+    {
+      path: "/admin/history",
+      label: "History",
+      icon: History,
+      color: "text-orange-500"
+    },
+    {
+      path: "/admin/customization",
+      label: "Customize",
+      icon: Palette,
+      color: "text-pink-500"
+    },
+    {
+      path: "/admin/welcome-popup",
+      label: "Popup",
+      icon: MessageSquare,
+      color: "text-green-500"
     }
   ];
 
@@ -99,6 +111,7 @@ const MobileBottomNav = () => {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 md:hidden">
+      {/* Main navigation items in list format for better mobile responsiveness */}
       <div className="flex items-center justify-around px-1 py-2">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path || 

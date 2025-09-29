@@ -21,7 +21,8 @@ import {
   Users,
   Palette,
   History,
-  MessageSquare
+  MessageSquare,
+  BarChart3
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -462,66 +463,66 @@ const Admin = () => {
             <TabsTrigger 
               value="dashboard" 
               onClick={() => setActiveTab('dashboard')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200 flex flex-col items-center"
             >
-              <Home className="h-4 w-4 mr-2" />
-              <span className="hidden md:inline">Dashboard</span>
+              <BarChart3 className="h-4 w-4" />
+              <span className="text-xs mt-1">Dashboard</span>
             </TabsTrigger>
             <TabsTrigger 
               value="users" 
               onClick={() => setActiveTab('users')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200 flex flex-col items-center"
             >
-              <Users className="h-4 w-4 mr-2" />
-              <span className="hidden md:inline">User Mgmt</span>
+              <Users className="h-4 w-4" />
+              <span className="text-xs mt-1">Users</span>
             </TabsTrigger>
             <TabsTrigger 
               value="green" 
               onClick={() => setActiveTab('green')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200 flex flex-col items-center"
             >
-              <Coffee className="h-4 w-4 mr-2" />
-              <span className="hidden md:inline">Green QA</span>
+              <Coffee className="h-4 w-4" />
+              <span className="text-xs mt-1">Green QA</span>
             </TabsTrigger>
             <TabsTrigger 
               value="roast" 
               onClick={() => setActiveTab('roast')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200 flex flex-col items-center"
             >
-              <Flame className="h-4 w-4 mr-2" />
-              <span className="hidden md:inline">Roast QA</span>
+              <Flame className="h-4 w-4" />
+              <span className="text-xs mt-1">Roast QA</span>
             </TabsTrigger>
             <TabsTrigger 
               value="cupping" 
               onClick={() => setActiveTab('cupping')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200 flex flex-col items-center"
             >
-              <FileText className="h-4 w-4 mr-2" />
-              <span className="hidden md:inline">Cupping QA</span>
+              <FileText className="h-4 w-4" />
+              <span className="text-xs mt-1">Cupping QA</span>
             </TabsTrigger>
             <TabsTrigger 
               value="history" 
               onClick={() => setActiveTab('history')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200 flex flex-col items-center"
             >
-              <History className="h-4 w-4 mr-2" />
-              <span className="hidden md:inline">History</span>
+              <History className="h-4 w-4" />
+              <span className="text-xs mt-1">History</span>
             </TabsTrigger>
             <TabsTrigger 
               value="customization" 
               onClick={() => setActiveTab('customization')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200 flex flex-col items-center"
             >
-              <Palette className="h-4 w-4 mr-2" />
-              <span className="hidden md:inline">Customize</span>
+              <Palette className="h-4 w-4" />
+              <span className="text-xs mt-1">Customize</span>
             </TabsTrigger>
             <TabsTrigger 
               value="welcome-popup" 
               onClick={() => setActiveTab('welcome-popup')}
-              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200"
+              className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-lg py-3 transition-all duration-200 flex flex-col items-center"
             >
-              <MessageSquare className="h-4 w-4 mr-2" />
-              <span className="hidden md:inline">Popup</span>
+              <MessageSquare className="h-4 w-4" />
+              <span className="text-xs mt-1">Popup</span>
             </TabsTrigger>
           </TabsList>
 

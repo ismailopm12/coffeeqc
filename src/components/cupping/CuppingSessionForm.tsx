@@ -63,7 +63,7 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
         // Additional session-level profile options
         session_type: formData.session_type || null,
         location: formData.location || null,
-        environmental_conditions: formData.environmental_conditions || null
+        environmental_conditions: formData.environmental_conditions || null // Fixed: ensure null is sent if empty
       };
 
       console.log('Creating cupping session with data:', sessionData);
