@@ -4,29 +4,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Coffee, Plus, Search, Filter, Calendar, FileText, BarChart3, History, Download } from "lucide-react";
+import { Coffee, Plus, Search, Filter, Calendar, FileText, BarChart3, History, Download, Edit, Trash2, Copy } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GreenAssessmentForm } from '@/components/green/GreenAssessmentForm';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
+import type { Database } from '@/integrations/supabase/types';
 
-interface GreenAssessment {
-  id: string;
-  lot_number: string;
-  origin: string;
-  variety?: string;
-  process?: string;
-  moisture_content?: number;
-  density?: number;
-  screen_size?: string;
-  defects_primary: number;
-  defects_secondary: number;
-  grade?: string;
-  notes?: string;
-  assessment_date: string;
-  created_at: string;
-}
+type GreenAssessment = Database['public']['Tables']['green_assessments']['Row'];
 
 export default function Green() {
   const { user } = useAuth();
@@ -35,6 +21,7 @@ export default function Green() {
   const [assessments, setAssessments] = useState<GreenAssessment[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editingAssessment, setEditingAssessment] = useState<GreenAssessment | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -69,7 +56,80 @@ export default function Green() {
 
   const handleFormSuccess = () => {
     setShowForm(false);
+    setEditingAssessment(null);
     loadAssessments();
+  };
+
+  const handleEdit = (assessment: GreenAssessment) => {
+    setEditingAssessment(assessment);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm('Are you sure you want to delete this assessment? This action cannot be undone.');
+    if (!confirmed) return;
+
+    try {
+      const { error } = await supabase
+        .from('green_assessments')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Assessment Deleted",
+        description: "Green bean assessment deleted successfully.",
+      });
+
+      loadAssessments();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete assessment: " + (error as Error).message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDuplicate = async (assessment: GreenAssessment) => {
+    try {
+      // Create a new assessment based on the existing one
+      const newAssessment = {
+        user_id: assessment.user_id,
+        lot_number: `Copy of ${assessment.lot_number}`,
+        origin: assessment.origin,
+        variety: assessment.variety,
+        process: assessment.process,
+        moisture_content: assessment.moisture_content,
+        density: assessment.density,
+        screen_size: assessment.screen_size,
+        defects_primary: assessment.defects_primary,
+        defects_secondary: assessment.defects_secondary,
+        grade: assessment.grade,
+        notes: assessment.notes,
+        assessment_date: assessment.assessment_date
+      };
+      
+      const { error } = await supabase
+        .from('green_assessments')
+        .insert(newAssessment);
+
+      if (error) throw error;
+
+      toast({
+        title: "Assessment Duplicated",
+        description: "Green bean assessment duplicated successfully.",
+      });
+
+      loadAssessments();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to duplicate assessment: " + (error as Error).message,
+        variant: "destructive",
+      });
+    }
   };
 
   const exportData = async () => {
@@ -78,14 +138,15 @@ export default function Green() {
       'Origin': assessment.origin,
       'Variety': assessment.variety || '',
       'Process': assessment.process || '',
-      'Moisture Content': assessment.moisture_content || '',
-      'Density': assessment.density || '',
+      'Moisture Content (%)': assessment.moisture_content || '',
+      'Density (g/ml)': assessment.density || '',
       'Screen Size': assessment.screen_size || '',
-      'Primary Defects': assessment.defects_primary,
-      'Secondary Defects': assessment.defects_secondary,
+      'Primary Defects': assessment.defects_primary || 0,
+      'Secondary Defects': assessment.defects_secondary || 0,
       'Grade': assessment.grade || '',
-      'Assessment Date': new Date(assessment.assessment_date).toLocaleDateString(),
-      'Notes': assessment.notes || ''
+      'Assessment Date': assessment.assessment_date ? new Date(assessment.assessment_date).toLocaleDateString() : '',
+      'Notes': assessment.notes || '',
+      'Created Date': new Date(assessment.created_at || '').toLocaleDateString()
     }));
 
     const csvContent = [
@@ -103,7 +164,7 @@ export default function Green() {
 
     toast({
       title: "Export Complete",
-      description: "Green bean assessments exported successfully!",
+      description: "Green assessments exported successfully!",
     });
   };
 
@@ -117,8 +178,12 @@ export default function Green() {
     return (
       <div className="space-y-6 pb-20 md:pb-6">
         <GreenAssessmentForm
+          assessment={editingAssessment}
           onSuccess={handleFormSuccess}
-          onCancel={() => setShowForm(false)}
+          onCancel={() => {
+            setShowForm(false);
+            setEditingAssessment(null);
+          }}
         />
       </div>
     );
@@ -189,7 +254,7 @@ export default function Green() {
               <div>
                 <p className="text-sm font-medium text-primary">This Month</p>
                 <p className="text-2xl font-bold">
-                  {assessments.filter(a => new Date(a.created_at).getMonth() === new Date().getMonth()).length}
+                  {assessments.filter(a => new Date(a.created_at || '').getMonth() === new Date().getMonth()).length}
                 </p>
               </div>
             </div>
@@ -203,7 +268,7 @@ export default function Green() {
                 <p className="text-sm font-medium text-accent">This Week</p>
                 <p className="text-2xl font-bold">
                   {assessments.filter(a => {
-                    const assessmentDate = new Date(a.created_at);
+                    const assessmentDate = new Date(a.created_at || '');
                     const weekAgo = new Date();
                     weekAgo.setDate(weekAgo.getDate() - 7);
                     return assessmentDate >= weekAgo;
@@ -276,16 +341,21 @@ export default function Green() {
                     </span>
                     <span className="text-muted-foreground ml-4">Date: </span>
                     <span className="font-medium">
-                      {new Date(assessment.assessment_date).toLocaleDateString()}
+                      {assessment.assessment_date ? new Date(assessment.assessment_date).toLocaleDateString() : 'N/A'}
                     </span>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">
-                      Edit Assessment
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(assessment)}>
+                      <Edit className="mr-2 h-3 w-3" />
+                      Edit
                     </Button>
-                    <Button variant="outline" size="sm">
-                      <FileText className="mr-2 h-3 w-3" />
-                      View Report
+                    <Button variant="outline" size="sm" onClick={() => handleDuplicate(assessment)}>
+                      <Copy className="mr-2 h-3 w-3" />
+                      Duplicate
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(assessment.id!)}>
+                      <Trash2 className="mr-2 h-3 w-3" />
+                      Delete
                     </Button>
                   </div>
                 </div>

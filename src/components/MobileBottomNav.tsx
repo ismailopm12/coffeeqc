@@ -23,6 +23,12 @@ const MobileBottomNav = () => {
   // Define navigation items for regular users
   const regularNavItems = [
     {
+      path: "/",
+      label: "Home",
+      icon: Home,
+      color: "text-primary"
+    },
+    {
       path: "/green",
       label: "Green",
       icon: Coffee,
@@ -50,6 +56,12 @@ const MobileBottomNav = () => {
 
   // Define navigation items for admin users (admin-only view)
   const adminNavItems = [
+    {
+      path: "/",
+      label: "Home",
+      icon: Home,
+      color: "text-primary"
+    },
     {
       path: "/admin",
       label: "Dashboard",

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -7,30 +7,34 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { Coffee, Save } from 'lucide-react';
+import { Coffee, Save, Edit3 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { Database } from '@/integrations/supabase/types';
+
+type GreenAssessment = Database['public']['Tables']['green_assessments']['Row'];
 
 interface GreenAssessmentFormProps {
+  assessment?: GreenAssessment | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-export function GreenAssessmentForm({ onSuccess, onCancel }: GreenAssessmentFormProps) {
+export function GreenAssessmentForm({ assessment, onSuccess, onCancel }: GreenAssessmentFormProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    lot_number: '',
-    origin: '',
-    variety: '',
-    process: '',
-    moisture_content: '',
-    density: '',
-    screen_size: '',
-    defects_primary: '',
-    defects_secondary: '',
-    grade: '',
-    notes: ''
+    lot_number: assessment?.lot_number || '',
+    origin: assessment?.origin || '',
+    variety: assessment?.variety || '',
+    process: assessment?.process || '',
+    moisture_content: assessment?.moisture_content?.toString() || '',
+    density: assessment?.density?.toString() || '',
+    screen_size: assessment?.screen_size || '',
+    defects_primary: assessment?.defects_primary?.toString() || '',
+    defects_secondary: assessment?.defects_secondary?.toString() || '',
+    grade: assessment?.grade || '',
+    notes: assessment?.notes || ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,35 +43,66 @@ export function GreenAssessmentForm({ onSuccess, onCancel }: GreenAssessmentForm
 
     setLoading(true);
 
-    const { error } = await supabase
-      .from('green_assessments')
-      .insert({
-        user_id: user.id,
-        lot_number: formData.lot_number,
-        origin: formData.origin,
-        variety: formData.variety || null,
-        process: formData.process || null,
-        moisture_content: formData.moisture_content ? parseFloat(formData.moisture_content) : null,
-        density: formData.density ? parseFloat(formData.density) : null,
-        screen_size: formData.screen_size || null,
-        defects_primary: formData.defects_primary ? parseInt(formData.defects_primary) : 0,
-        defects_secondary: formData.defects_secondary ? parseInt(formData.defects_secondary) : 0,
-        grade: formData.grade || null,
-        notes: formData.notes || null
-      });
+    try {
+      if (assessment) {
+        // Update existing assessment
+        const { error } = await supabase
+          .from('green_assessments')
+          .update({
+            lot_number: formData.lot_number,
+            origin: formData.origin,
+            variety: formData.variety || null,
+            process: formData.process || null,
+            moisture_content: formData.moisture_content ? parseFloat(formData.moisture_content) : null,
+            density: formData.density ? parseFloat(formData.density) : null,
+            screen_size: formData.screen_size || null,
+            defects_primary: formData.defects_primary ? parseInt(formData.defects_primary) : 0,
+            defects_secondary: formData.defects_secondary ? parseInt(formData.defects_secondary) : 0,
+            grade: formData.grade || null,
+            notes: formData.notes || null
+          })
+          .eq('id', assessment.id);
 
-    if (error) {
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Green coffee assessment updated successfully!",
+        });
+      } else {
+        // Create new assessment
+        const { error } = await supabase
+          .from('green_assessments')
+          .insert({
+            user_id: user.id,
+            lot_number: formData.lot_number,
+            origin: formData.origin,
+            variety: formData.variety || null,
+            process: formData.process || null,
+            moisture_content: formData.moisture_content ? parseFloat(formData.moisture_content) : null,
+            density: formData.density ? parseFloat(formData.density) : null,
+            screen_size: formData.screen_size || null,
+            defects_primary: formData.defects_primary ? parseInt(formData.defects_primary) : 0,
+            defects_secondary: formData.defects_secondary ? parseInt(formData.defects_secondary) : 0,
+            grade: formData.grade || null,
+            notes: formData.notes || null
+          });
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Green coffee assessment saved successfully!",
+        });
+      }
+
+      onSuccess();
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message,
+        description: (error as Error).message,
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Success",
-        description: "Green coffee assessment saved successfully!",
-      });
-      onSuccess();
     }
 
     setLoading(false);
@@ -82,7 +117,7 @@ export function GreenAssessmentForm({ onSuccess, onCancel }: GreenAssessmentForm
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-coffee-green">
           <Coffee className="h-5 w-5" />
-          New Green Coffee Assessment
+          {assessment ? 'Edit Green Coffee Assessment' : 'New Green Coffee Assessment'}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -200,7 +235,7 @@ export function GreenAssessmentForm({ onSuccess, onCancel }: GreenAssessmentForm
           <div className="flex gap-2">
             <Button type="submit" disabled={loading} className="bg-coffee-green hover:bg-coffee-green/90">
               <Save className="mr-2 h-4 w-4" />
-              {loading ? "Saving..." : "Save Assessment"}
+              {loading ? "Saving..." : (assessment ? "Update Assessment" : "Save Assessment")}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancel

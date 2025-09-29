@@ -7,32 +7,37 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
-import { Flame, Save } from 'lucide-react';
+import { Flame, Save, Edit3 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { Database } from '@/integrations/supabase/types';
+
+type RoastProfile = Database['public']['Tables']['roast_profiles']['Row'];
+type GreenAssessment = Database['public']['Tables']['green_assessments']['Row'];
 
 interface RoastProfileFormProps {
+  profile?: RoastProfile | null;
   onSuccess: () => void;
   onCancel: () => void;
 }
 
-export function RoastProfileForm({ onSuccess, onCancel }: RoastProfileFormProps) {
+export function RoastProfileForm({ profile, onSuccess, onCancel }: RoastProfileFormProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [greenAssessments, setGreenAssessments] = useState<any[]>([]);
+  const [greenAssessments, setGreenAssessments] = useState<Pick<GreenAssessment, 'id' | 'origin' | 'lot_number'>[]>([]);
   const [formData, setFormData] = useState({
-    profile_name: '',
-    green_assessment_id: '',
-    batch_size: '',
-    preheat_temp: '',
-    charge_temp: '',
-    first_crack_time: '',
-    first_crack_temp: '',
-    development_time: '',
-    drop_temp: '',
-    total_roast_time: '',
-    roast_level: '',
-    notes: ''
+    profile_name: profile?.profile_name || '',
+    green_assessment_id: profile?.green_assessment_id || '',
+    batch_size: profile?.batch_size?.toString() || '',
+    preheat_temp: profile?.preheat_temp?.toString() || '',
+    charge_temp: profile?.charge_temp?.toString() || '',
+    first_crack_time: profile?.first_crack_time?.toString() || '',
+    first_crack_temp: profile?.first_crack_temp?.toString() || '',
+    development_time: profile?.development_time?.toString() || '',
+    drop_temp: profile?.drop_temp?.toString() || '',
+    total_roast_time: profile?.total_roast_time?.toString() || '',
+    roast_level: profile?.roast_level || '',
+    notes: profile?.notes || ''
   });
 
   useEffect(() => {
@@ -59,36 +64,68 @@ export function RoastProfileForm({ onSuccess, onCancel }: RoastProfileFormProps)
 
     setLoading(true);
 
-    const { error } = await supabase
-      .from('roast_profiles')
-      .insert({
-        user_id: user.id,
-        profile_name: formData.profile_name,
-        green_assessment_id: formData.green_assessment_id || null,
-        batch_size: formData.batch_size ? parseFloat(formData.batch_size) : null,
-        preheat_temp: formData.preheat_temp ? parseInt(formData.preheat_temp) : null,
-        charge_temp: formData.charge_temp ? parseInt(formData.charge_temp) : null,
-        first_crack_time: formData.first_crack_time ? parseInt(formData.first_crack_time) : null,
-        first_crack_temp: formData.first_crack_temp ? parseInt(formData.first_crack_temp) : null,
-        development_time: formData.development_time ? parseInt(formData.development_time) : null,
-        drop_temp: formData.drop_temp ? parseInt(formData.drop_temp) : null,
-        total_roast_time: formData.total_roast_time ? parseInt(formData.total_roast_time) : null,
-        roast_level: formData.roast_level || null,
-        notes: formData.notes || null
-      });
+    try {
+      if (profile) {
+        // Update existing profile
+        const { error } = await supabase
+          .from('roast_profiles')
+          .update({
+            profile_name: formData.profile_name,
+            green_assessment_id: formData.green_assessment_id || null,
+            batch_size: formData.batch_size ? parseFloat(formData.batch_size) : null,
+            preheat_temp: formData.preheat_temp ? parseInt(formData.preheat_temp) : null,
+            charge_temp: formData.charge_temp ? parseInt(formData.charge_temp) : null,
+            first_crack_time: formData.first_crack_time ? parseInt(formData.first_crack_time) : null,
+            first_crack_temp: formData.first_crack_temp ? parseInt(formData.first_crack_temp) : null,
+            development_time: formData.development_time ? parseInt(formData.development_time) : null,
+            drop_temp: formData.drop_temp ? parseInt(formData.drop_temp) : null,
+            total_roast_time: formData.total_roast_time ? parseInt(formData.total_roast_time) : null,
+            roast_level: formData.roast_level || null,
+            notes: formData.notes || null
+          })
+          .eq('id', profile.id);
 
-    if (error) {
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Roast profile updated successfully!",
+        });
+      } else {
+        // Create new profile
+        const { error } = await supabase
+          .from('roast_profiles')
+          .insert({
+            user_id: user.id,
+            profile_name: formData.profile_name,
+            green_assessment_id: formData.green_assessment_id || null,
+            batch_size: formData.batch_size ? parseFloat(formData.batch_size) : null,
+            preheat_temp: formData.preheat_temp ? parseInt(formData.preheat_temp) : null,
+            charge_temp: formData.charge_temp ? parseInt(formData.charge_temp) : null,
+            first_crack_time: formData.first_crack_time ? parseInt(formData.first_crack_time) : null,
+            first_crack_temp: formData.first_crack_temp ? parseInt(formData.first_crack_temp) : null,
+            development_time: formData.development_time ? parseInt(formData.development_time) : null,
+            drop_temp: formData.drop_temp ? parseInt(formData.drop_temp) : null,
+            total_roast_time: formData.total_roast_time ? parseInt(formData.total_roast_time) : null,
+            roast_level: formData.roast_level || null,
+            notes: formData.notes || null
+          });
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Roast profile created successfully!",
+        });
+      }
+
+      onSuccess();
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message,
+        description: (error as Error).message,
         variant: "destructive",
       });
-    } else {
-      toast({
-        title: "Success",
-        description: "Roast profile created successfully!",
-      });
-      onSuccess();
     }
 
     setLoading(false);
@@ -103,7 +140,7 @@ export function RoastProfileForm({ onSuccess, onCancel }: RoastProfileFormProps)
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-coffee-roast">
           <Flame className="h-5 w-5" />
-          Create Roast Profile
+          {profile ? 'Edit Roast Profile' : 'Create Roast Profile'}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -247,7 +284,7 @@ export function RoastProfileForm({ onSuccess, onCancel }: RoastProfileFormProps)
           <div className="flex gap-2">
             <Button type="submit" disabled={loading} className="bg-coffee-roast hover:bg-coffee-roast/90">
               <Save className="mr-2 h-4 w-4" />
-              {loading ? "Saving..." : "Create Profile"}
+              {loading ? "Saving..." : (profile ? "Update Profile" : "Create Profile")}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel}>
               Cancel

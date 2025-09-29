@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { FileText, Save, Calendar } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface CuppingSessionFormProps {
   onSuccess: () => void;
@@ -22,7 +23,11 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
     session_name: '',
     cupper_name: '',
     cupping_date: new Date().toISOString().split('T')[0],
-    notes: ''
+    notes: '',
+    // Additional session-level profile options
+    session_type: '',
+    location: '',
+    environmental_conditions: ''
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,7 +43,11 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
         session_name: formData.session_name,
         cupper_name: formData.cupper_name || null,
         cupping_date: formData.cupping_date,
-        notes: formData.notes || null
+        notes: formData.notes || null,
+        // Additional session-level profile options
+        session_type: formData.session_type || null,
+        location: formData.location || null,
+        environmental_conditions: formData.environmental_conditions || null
       });
 
     if (error) {
@@ -93,6 +102,22 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
             </div>
             
             <div className="space-y-2">
+              <Label htmlFor="session_type">Session Type</Label>
+              <Select value={formData.session_type} onValueChange={(value) => handleInputChange('session_type', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select session type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="quality-control">Quality Control</SelectItem>
+                  <SelectItem value="new-lot-evaluation">New Lot Evaluation</SelectItem>
+                  <SelectItem value="comparative-tasting">Comparative Tasting</SelectItem>
+                  <SelectItem value="training">Training</SelectItem>
+                  <SelectItem value="research">Research</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
               <Label htmlFor="cupping_date">Cupping Date</Label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -106,6 +131,27 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
                 />
               </div>
             </div>
+            
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                value={formData.location}
+                onChange={(e) => handleInputChange('location', e.target.value)}
+                placeholder="e.g., Cupping Lab A, Roastery"
+              />
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="environmental_conditions">Environmental Conditions</Label>
+            <Textarea
+              id="environmental_conditions"
+              value={formData.environmental_conditions}
+              onChange={(e) => handleInputChange('environmental_conditions', e.target.value)}
+              rows={2}
+              placeholder="Temperature, humidity, atmospheric pressure, etc."
+            />
           </div>
           
           <div className="space-y-2">
@@ -115,7 +161,7 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
               value={formData.notes}
               onChange={(e) => handleInputChange('notes', e.target.value)}
               rows={3}
-              placeholder="Session objectives, environmental conditions, etc..."
+              placeholder="Session objectives, special instructions, etc..."
             />
           </div>
 

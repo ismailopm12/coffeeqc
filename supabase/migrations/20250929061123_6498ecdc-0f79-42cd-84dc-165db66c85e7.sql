@@ -48,6 +48,10 @@ CREATE TABLE public.cupping_sessions (
   cupping_date TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   cupper_name TEXT,
   notes TEXT,
+  -- Additional session-level profile options
+  session_type TEXT,
+  location TEXT,
+  environmental_conditions TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -74,6 +78,15 @@ CREATE TABLE public.cupping_evaluations (
     balance + uniformity + clean_cup + sweetness + overall - (defects * 2)
   ) STORED,
   notes TEXT,
+  -- New profile fields
+  kilogram_name TEXT,
+  test_type TEXT,
+  process TEXT,
+  tds DECIMAL(5,2),
+  roast_level TEXT,
+  roast_date DATE,
+  green_origin TEXT,
+  green_variety TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

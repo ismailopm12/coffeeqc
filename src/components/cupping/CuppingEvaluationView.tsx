@@ -48,11 +48,71 @@ export function CuppingEvaluationView({ sessionId }: CuppingEvaluationViewProps)
   };
 
   const exportToCSV = () => {
-    // In a real implementation, this would export the data to CSV
-    // For now, we'll just show a success message
+    // Create CSV content with all fields including new profile fields
+    const headers = [
+      'Sample Name',
+      'Kilogram Name',
+      'Test Type',
+      'Process',
+      'TDS (%)',
+      'Roast Level',
+      'Roast Date',
+      'Green Origin',
+      'Green Variety',
+      'Fragrance/Aroma',
+      'Flavor',
+      'Aftertaste',
+      'Acidity',
+      'Body',
+      'Balance',
+      'Uniformity',
+      'Clean Cup',
+      'Sweetness',
+      'Overall',
+      'Defects',
+      'Total Score',
+      'Notes'
+    ];
+
+    const csvContent = [
+      headers.join(','),
+      ...evaluations.map(evaluation => [
+        evaluation.sample_name,
+        evaluation.kilogram_name || '',
+        evaluation.test_type || '',
+        evaluation.process || '',
+        evaluation.tds || '',
+        evaluation.roast_level || '',
+        evaluation.roast_date || '',
+        evaluation.green_origin || '',
+        evaluation.green_variety || '',
+        evaluation.fragrance_aroma?.toFixed(1) || '',
+        evaluation.flavor?.toFixed(1) || '',
+        evaluation.aftertaste?.toFixed(1) || '',
+        evaluation.acidity?.toFixed(1) || '',
+        evaluation.body?.toFixed(1) || '',
+        evaluation.balance?.toFixed(1) || '',
+        evaluation.uniformity?.toFixed(1) || '',
+        evaluation.clean_cup?.toFixed(1) || '',
+        evaluation.sweetness?.toFixed(1) || '',
+        evaluation.overall?.toFixed(1) || '',
+        evaluation.defects || '',
+        evaluation.total_score?.toFixed(1) || '',
+        `"${evaluation.notes || ''}"`
+      ].map(field => `"${field}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cupping_evaluations_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+
     toast({
-      title: "Export Started",
-      description: "Cupping evaluations export initiated",
+      title: "Export Complete",
+      description: "Cupping evaluations exported successfully!",
     });
   };
 
@@ -165,46 +225,64 @@ export function CuppingEvaluationView({ sessionId }: CuppingEvaluationViewProps)
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Sample</TableHead>
-                <TableHead>Fragrance/Aroma</TableHead>
-                <TableHead>Flavor</TableHead>
-                <TableHead>Aftertaste</TableHead>
-                <TableHead>Acidity</TableHead>
-                <TableHead>Body</TableHead>
-                <TableHead>Balance</TableHead>
-                <TableHead>Uniformity</TableHead>
-                <TableHead>Clean Cup</TableHead>
-                <TableHead>Sweetness</TableHead>
-                <TableHead>Overall</TableHead>
-                <TableHead>Defects</TableHead>
-                <TableHead className="text-right">Total Score</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {evaluations.map((evaluation) => (
-                <TableRow key={evaluation.id}>
-                  <TableCell className="font-medium">{evaluation.sample_name}</TableCell>
-                  <TableCell>{evaluation.fragrance_aroma?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.flavor?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.aftertaste?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.acidity?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.body?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.balance?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.uniformity?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.clean_cup?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.sweetness?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.overall?.toFixed(1) || '-'}</TableCell>
-                  <TableCell>{evaluation.defects || '-'}</TableCell>
-                  <TableCell className="text-right font-bold text-accent">
-                    {evaluation.total_score?.toFixed(1) || '-'}
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Sample</TableHead>
+                  <TableHead>Kilogram Name</TableHead>
+                  <TableHead>Test Type</TableHead>
+                  <TableHead>Process</TableHead>
+                  <TableHead>TDS (%)</TableHead>
+                  <TableHead>Roast Level</TableHead>
+                  <TableHead>Roast Date</TableHead>
+                  <TableHead>Origin</TableHead>
+                  <TableHead>Variety</TableHead>
+                  <TableHead>Fragrance/Aroma</TableHead>
+                  <TableHead>Flavor</TableHead>
+                  <TableHead>Aftertaste</TableHead>
+                  <TableHead>Acidity</TableHead>
+                  <TableHead>Body</TableHead>
+                  <TableHead>Balance</TableHead>
+                  <TableHead>Uniformity</TableHead>
+                  <TableHead>Clean Cup</TableHead>
+                  <TableHead>Sweetness</TableHead>
+                  <TableHead>Overall</TableHead>
+                  <TableHead>Defects</TableHead>
+                  <TableHead className="text-right">Total Score</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {evaluations.map((evaluation) => (
+                  <TableRow key={evaluation.id}>
+                    <TableCell className="font-medium">{evaluation.sample_name}</TableCell>
+                    <TableCell>{evaluation.kilogram_name || '-'}</TableCell>
+                    <TableCell>{evaluation.test_type || '-'}</TableCell>
+                    <TableCell>{evaluation.process || '-'}</TableCell>
+                    <TableCell>{evaluation.tds?.toFixed(2) || '-'}</TableCell>
+                    <TableCell>{evaluation.roast_level || '-'}</TableCell>
+                    <TableCell>{evaluation.roast_date || '-'}</TableCell>
+                    <TableCell>{evaluation.green_origin || '-'}</TableCell>
+                    <TableCell>{evaluation.green_variety || '-'}</TableCell>
+                    <TableCell>{evaluation.fragrance_aroma?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.flavor?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.aftertaste?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.acidity?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.body?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.balance?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.uniformity?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.clean_cup?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.sweetness?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.overall?.toFixed(1) || '-'}</TableCell>
+                    <TableCell>{evaluation.defects || '-'}</TableCell>
+                    <TableCell className="text-right font-bold text-accent">
+                      {evaluation.total_score?.toFixed(1) || '-'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
 

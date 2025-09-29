@@ -4,89 +4,24 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Flame, Plus, Thermometer, Clock, Target, BarChart3, History, Calendar, Download } from "lucide-react";
+import { Flame, Plus, Thermometer, Clock, Target, BarChart3, History, Calendar, Download, Edit, Trash2, Copy } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RoastProfileForm } from '@/components/roast/RoastProfileForm';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
+import type { Database } from '@/integrations/supabase/types';
 
-const roastProfiles = [
-  {
-    id: 1,
-    name: "Ethiopian Light Roast",
-    bean: "Ethiopian Sidamo",
-    roastLevel: "Light",
-    duration: "12:30",
-    firstCrack: "9:45",
-    endTemp: "196°C",
-    developmentRatio: "18.5%",
-    qualityScore: 88.2,
-    batchSize: "5kg",
-    date: "2024-01-15"
-  },
-  {
-    id: 2,
-    name: "Colombian Medium",
-    bean: "Colombian Huila", 
-    roastLevel: "Medium",
-    duration: "14:15",
-    firstCrack: "10:20",
-    endTemp: "210°C",
-    developmentRatio: "20.2%",
-    qualityScore: 86.7,
-    batchSize: "10kg",
-    date: "2024-01-18"
-  },
-  {
-    id: 3,
-    name: "Guatemala Dark Roast",
-    bean: "Guatemala Antigua",
-    roastLevel: "Medium-Dark",
-    duration: "15:45",
-    firstCrack: "11:10",
-    endTemp: "225°C",
-    developmentRatio: "22.1%",
-    qualityScore: 85.5,
-    batchSize: "8kg",
-    date: "2024-01-20"
-  }
-];
-
-const roastHistory = [
-  {
-    date: "2024-01-12",
-    profile: "Brazilian Pulped Natural",
-    roastLevel: "Medium",
-    qualityScore: 84.0,
-    batchSize: "12kg",
-    notes: "Slightly overdeveloped, reduce time by 30s"
-  },
-  {
-    date: "2024-01-10",
-    profile: "Kenya AA Natural Process",
-    roastLevel: "Light-Medium", 
-    qualityScore: 89.5,
-    batchSize: "6kg",
-    notes: "Perfect development, replicate parameters"
-  },
-  {
-    date: "2024-01-08",
-    profile: "Panama Geisha Washed",
-    roastLevel: "Light",
-    qualityScore: 92.0,
-    batchSize: "3kg",
-    notes: "Exceptional clarity, premium grade"
-  }
-];
+type RoastProfile = Database['public']['Tables']['roast_profiles']['Row'];
 
 export default function Roast() {
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [profiles, setProfiles] = useState<any[]>([]);
+  const [profiles, setProfiles] = useState<RoastProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [editingProfile, setEditingProfile] = useState<RoastProfile | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -120,7 +55,80 @@ export default function Roast() {
 
   const handleFormSuccess = () => {
     setShowForm(false);
+    setEditingProfile(null);
     loadProfiles();
+  };
+
+  const handleEdit = (profile: RoastProfile) => {
+    setEditingProfile(profile);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    const confirmed = window.confirm('Are you sure you want to delete this roast profile? This action cannot be undone.');
+    if (!confirmed) return;
+
+    try {
+      const { error } = await supabase
+        .from('roast_profiles')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Profile Deleted",
+        description: "Roast profile deleted successfully.",
+      });
+
+      loadProfiles();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete profile: " + (error as Error).message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDuplicate = async (profile: RoastProfile) => {
+    try {
+      // Create a new profile based on the existing one
+      const newProfile = {
+        user_id: profile.user_id,
+        profile_name: `Copy of ${profile.profile_name}`,
+        green_assessment_id: profile.green_assessment_id,
+        batch_size: profile.batch_size,
+        preheat_temp: profile.preheat_temp,
+        charge_temp: profile.charge_temp,
+        first_crack_time: profile.first_crack_time,
+        first_crack_temp: profile.first_crack_temp,
+        development_time: profile.development_time,
+        drop_temp: profile.drop_temp,
+        total_roast_time: profile.total_roast_time,
+        roast_level: profile.roast_level,
+        notes: profile.notes
+      };
+      
+      const { error } = await supabase
+        .from('roast_profiles')
+        .insert(newProfile);
+
+      if (error) throw error;
+
+      toast({
+        title: "Profile Duplicated",
+        description: "Roast profile duplicated successfully.",
+      });
+
+      loadProfiles();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to duplicate profile: " + (error as Error).message,
+        variant: "destructive",
+      });
+    }
   };
 
   const exportData = async () => {
@@ -135,7 +143,7 @@ export default function Roast() {
       'Drop Temp (°C)': profile.drop_temp || '',
       'Total Roast Time (s)': profile.total_roast_time || '',
       'Roast Level': profile.roast_level || '',
-      'Created Date': new Date(profile.created_at).toLocaleDateString(),
+      'Created Date': new Date(profile.created_at || '').toLocaleDateString(),
       'Notes': profile.notes || ''
     }));
 
@@ -162,8 +170,12 @@ export default function Roast() {
     return (
       <div className="space-y-6 pb-20 md:pb-6">
         <RoastProfileForm
+          profile={editingProfile}
           onSuccess={handleFormSuccess}
-          onCancel={() => setShowForm(false)}
+          onCancel={() => {
+            setShowForm(false);
+            setEditingProfile(null);
+          }}
         />
       </div>
     );
@@ -214,7 +226,7 @@ export default function Roast() {
               <div>
                 <p className="text-sm font-medium text-primary">This Month</p>
                 <p className="text-2xl font-bold">
-                  {profiles.filter(p => new Date(p.created_at).getMonth() === new Date().getMonth()).length}
+                  {profiles.filter(p => new Date(p.created_at || '').getMonth() === new Date().getMonth()).length}
                 </p>
               </div>
             </div>
@@ -228,7 +240,7 @@ export default function Roast() {
                 <p className="text-sm font-medium text-accent">This Week</p>
                 <p className="text-2xl font-bold">
                   {profiles.filter(p => {
-                    const profileDate = new Date(p.created_at);
+                    const profileDate = new Date(p.created_at || '');
                     const weekAgo = new Date();
                     weekAgo.setDate(weekAgo.getDate() - 7);
                     return profileDate >= weekAgo;
@@ -268,7 +280,7 @@ export default function Roast() {
                       {profile.batch_size ? `Batch Size: ${profile.batch_size}kg` : 'Batch size not specified'}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Created: {new Date(profile.created_at).toLocaleDateString()}
+                      Created: {profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A'}
                     </p>
                   </div>
                   <div className="text-right">
@@ -312,8 +324,18 @@ export default function Roast() {
                     </span>
                   </div>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm">Edit Profile</Button>
-                    <Button variant="outline" size="sm">Duplicate</Button>
+                    <Button variant="outline" size="sm" onClick={() => handleEdit(profile)}>
+                      <Edit className="mr-2 h-3 w-3" />
+                      Edit
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDuplicate(profile)}>
+                      <Copy className="mr-2 h-3 w-3" />
+                      Duplicate
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleDelete(profile.id!)}>
+                      <Trash2 className="mr-2 h-3 w-3" />
+                      Delete
+                    </Button>
                   </div>
                 </div>
                 {profile.notes && (

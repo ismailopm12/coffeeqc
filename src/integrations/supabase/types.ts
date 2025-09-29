@@ -35,6 +35,15 @@ export type Database = {
           total_score: number | null
           uniformity: number | null
           updated_at: string | null
+          // New profile fields
+          kilogram_name: string | null
+          test_type: string | null
+          process: string | null
+          tds: number | null
+          roast_level: string | null
+          roast_date: string | null
+          green_origin: string | null
+          green_variety: string | null
         }
         Insert: {
           acidity?: number | null
@@ -56,6 +65,15 @@ export type Database = {
           total_score?: number | null
           uniformity?: number | null
           updated_at?: string | null
+          // New profile fields
+          kilogram_name?: string | null
+          test_type?: string | null
+          process?: string | null
+          tds?: number | null
+          roast_level?: string | null
+          roast_date?: string | null
+          green_origin?: string | null
+          green_variety?: string | null
         }
         Update: {
           acidity?: number | null
@@ -77,6 +95,15 @@ export type Database = {
           total_score?: number | null
           uniformity?: number | null
           updated_at?: string | null
+          // New profile fields
+          kilogram_name?: string | null
+          test_type?: string | null
+          process?: string | null
+          tds?: number | null
+          roast_level?: string | null
+          roast_date?: string | null
+          green_origin?: string | null
+          green_variety?: string | null
         }
         Relationships: [
           {
@@ -105,6 +132,10 @@ export type Database = {
           session_name: string
           updated_at: string | null
           user_id: string
+          // Additional session-level profile options
+          session_type: string | null
+          location: string | null
+          environmental_conditions: string | null
         }
         Insert: {
           created_at?: string | null
@@ -115,6 +146,10 @@ export type Database = {
           session_name: string
           updated_at?: string | null
           user_id: string
+          // Additional session-level profile options
+          session_type?: string | null
+          location?: string | null
+          environmental_conditions?: string | null
         }
         Update: {
           created_at?: string | null
@@ -125,6 +160,10 @@ export type Database = {
           session_name?: string
           updated_at?: string | null
           user_id?: string
+          // Additional session-level profile options
+          session_type?: string | null
+          location?: string | null
+          environmental_conditions?: string | null
         }
         Relationships: []
       }

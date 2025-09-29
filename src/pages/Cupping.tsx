@@ -81,6 +81,33 @@ export default function Cupping() {
     setShowEvaluationForm(true);
   };
 
+  const handleDeleteSession = async (sessionId: string) => {
+    const confirmed = window.confirm('Are you sure you want to delete this cupping session? This will also delete all evaluations in this session. This action cannot be undone.');
+    if (!confirmed) return;
+
+    try {
+      const { error } = await supabase
+        .from('cupping_sessions')
+        .delete()
+        .eq('id', sessionId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Session Deleted",
+        description: "Cupping session deleted successfully.",
+      });
+
+      loadSessions();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete session: " + (error as Error).message,
+        variant: "destructive",
+      });
+    }
+  };
+
   if (showForm) {
     return (
       <div className="space-y-6 pb-20 md:pb-6">
@@ -261,6 +288,10 @@ export default function Cupping() {
                       <Button variant="outline" size="sm">
                         <Download className="mr-2 h-3 w-3" />
                         Export
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => handleDeleteSession(session.id!)}>
+                        <Trash2 className="mr-2 h-3 w-3" />
+                        Delete
                       </Button>
                     </div>
                   </CardContent>
