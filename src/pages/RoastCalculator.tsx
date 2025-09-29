@@ -3,7 +3,7 @@ import RoastBeansCalculator from "@/components/RoastBeansCalculator";
 
 const RoastCalculator = () => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-28 md:pb-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Roast Beans Calculator</h1>
         <p className="text-muted-foreground">

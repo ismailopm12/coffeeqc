@@ -168,7 +168,7 @@ export default function Roast() {
 
   if (showForm) {
     return (
-      <div className="space-y-6 pb-20 md:pb-6">
+      <div className="space-y-6 pb-28 md:pb-6">
         <RoastProfileForm
           profile={editingProfile}
           onSuccess={handleFormSuccess}
@@ -182,7 +182,7 @@ export default function Roast() {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-28 md:pb-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

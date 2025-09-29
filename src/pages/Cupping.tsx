@@ -110,7 +110,7 @@ export default function Cupping() {
 
   if (showForm) {
     return (
-      <div className="space-y-6 pb-20 md:pb-6">
+      <div className="space-y-6 pb-28 md:pb-6">
         <CuppingSessionForm
           onSuccess={handleFormSuccess}
           onCancel={() => setShowForm(false)}
@@ -121,7 +121,7 @@ export default function Cupping() {
 
   if (showEvaluationForm && selectedSessionId) {
     return (
-      <div className="space-y-6 pb-20 md:pb-6">
+      <div className="space-y-6 pb-28 md:pb-6">
         <CuppingEvaluationForm
           sessionId={selectedSessionId}
           onSuccess={handleEvaluationSuccess}
@@ -133,7 +133,7 @@ export default function Cupping() {
 
   if (viewingEvaluations && selectedSessionId) {
     return (
-      <div className="space-y-6 pb-20 md:pb-6">
+      <div className="space-y-6 pb-28 md:pb-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-accent">Cupping Evaluations</h1>
           <Button onClick={() => setViewingEvaluations(false)} variant="outline">
@@ -146,7 +146,7 @@ export default function Cupping() {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-28 md:pb-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

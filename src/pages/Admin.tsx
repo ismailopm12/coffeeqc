@@ -423,13 +423,13 @@ const Admin = () => {
   // Update the Tabs component to use proper routing
   return (
     <AdminGuard>
-      <div className="space-y-6 pb-16 md:pb-0">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+      <div className="space-y-6 pb-28 md:pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Admin Panel</h1>
             <p className="text-muted-foreground">Manage your coffee quality control system</p>
           </div>
-          <div className="flex gap-2 mt-4 md:mt-0">
+          <div className="flex gap-2 mt-4 sm:mt-0">
             <Button onClick={fetchData} variant="outline">
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>

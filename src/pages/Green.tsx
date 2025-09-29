@@ -176,7 +176,7 @@ export default function Green() {
 
   if (showForm) {
     return (
-      <div className="space-y-6 pb-20 md:pb-6">
+      <div className="space-y-6 pb-28 md:pb-6">
         <GreenAssessmentForm
           assessment={editingAssessment}
           onSuccess={handleFormSuccess}
@@ -190,7 +190,7 @@ export default function Green() {
   }
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-28 md:pb-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

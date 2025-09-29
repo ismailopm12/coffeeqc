@@ -45,9 +45,9 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen bg-background flex flex-col">
               <Header />
-              <main className="container mx-auto px-4 py-6 pb-24 md:pb-6">
+              <main className="container mx-auto px-4 py-6 flex-grow pb-28 md:pb-6">
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/green" element={<Green />} />

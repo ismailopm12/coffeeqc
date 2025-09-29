@@ -162,7 +162,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-20 md:pb-6">
+    <div className="space-y-6 pb-28 md:pb-6">
       {/* Hero Slider Section */}
       <div className="relative">
         <Carousel
