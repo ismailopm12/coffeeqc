@@ -20,8 +20,8 @@ const MobileBottomNav = () => {
     setIsAdminMode(location.pathname.startsWith('/admin'));
   }, [location.pathname]);
 
-  // Define navigation items for regular users
-  const regularNavItems = [
+  // Define navigation items for regular users (client mode)
+  const clientNavItems = [
     {
       path: "/",
       label: "Home",
@@ -47,14 +47,14 @@ const MobileBottomNav = () => {
       color: "text-accent"
     },
     {
-      path: "/profile",
-      label: "Profile",
-      icon: User,
+      path: "/calculator",
+      label: "Calculator",
+      icon: Calculator,
       color: "text-purple-500"
     }
   ];
 
-  // Define navigation items for admin users (admin-only view) with all admin menu items
+  // Define navigation items for admin users (admin mode)
   const adminNavItems = [
     {
       path: "/admin",
@@ -85,11 +85,7 @@ const MobileBottomNav = () => {
       label: "Cupping QA",
       icon: FileText,
       color: "text-accent"
-    }
-  ];
-
-  // Additional admin items that will be shown in a scrollable section
-  const additionalAdminNavItems = [
+    },
     {
       path: "/admin/history",
       label: "History",
@@ -111,7 +107,12 @@ const MobileBottomNav = () => {
   ];
 
   // Determine which navigation items to show
-  const navItems = isAdminMode ? adminNavItems : regularNavItems;
+  const navItems = isAdminMode ? adminNavItems : clientNavItems;
+
+  // Only show the navigation if user is logged in
+  if (!user) {
+    return null;
+  }
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-50 md:hidden">
@@ -150,75 +151,7 @@ const MobileBottomNav = () => {
             </Link>
           );
         })}
-        {/* Calculator menu icon for non-admin users */}
-        {!isAdminMode && (
-          <Link
-            to="/calculator"
-            className={cn(
-              "flex flex-col items-center justify-center px-2 py-2 min-w-0 flex-1 rounded-lg transition-all",
-              location.pathname.startsWith("/calculator")
-                ? "bg-secondary shadow-warm" 
-                : "hover:bg-secondary/50"
-            )}
-          >
-            <Calculator 
-              className={cn(
-                "h-5 w-5 mb-1 transition-colors",
-                location.pathname.startsWith("/calculator") ? "text-primary" : "text-muted-foreground"
-              )} 
-            />
-            <span 
-              className={cn(
-                "text-xs font-medium transition-colors text-center",
-                location.pathname.startsWith("/calculator") ? "text-foreground" : "text-muted-foreground"
-              )}
-            >
-              Calculator
-            </span>
-          </Link>
-        )}
       </div>
-      
-      {/* Additional admin items - shown when in admin mode */}
-      {isAdminMode && (
-        <div className="border-t border-border overflow-x-auto">
-          <div className="flex items-center justify-start px-2 py-2 min-w-max">
-            {additionalAdminNavItems.map((item) => {
-              const isActive = location.pathname === item.path || 
-                              (item.path !== '/admin' && location.pathname.startsWith(item.path));
-              const Icon = item.icon;
-              
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={cn(
-                    "flex flex-col items-center justify-center px-3 py-2 min-w-0 rounded-lg transition-all mx-1",
-                    isActive 
-                      ? "bg-secondary shadow-warm" 
-                      : "hover:bg-secondary/50"
-                  )}
-                >
-                  <Icon 
-                    className={cn(
-                      "h-4 w-4 mb-1 transition-colors",
-                      isActive ? item.color : "text-muted-foreground"
-                    )} 
-                  />
-                  <span 
-                    className={cn(
-                      "text-xs font-medium transition-colors text-center",
-                      isActive ? "text-foreground" : "text-muted-foreground"
-                    )}
-                  >
-                    {item.label}
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
       
       {/* Admin toggle button - only shown for admin users */}
       {isAdmin && (
