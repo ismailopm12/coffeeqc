@@ -165,7 +165,15 @@ export type Database = {
           location?: string | null
           environmental_conditions?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cupping_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       green_assessments: {
         Row: {

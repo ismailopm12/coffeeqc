@@ -63,7 +63,7 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
         // Additional session-level profile options
         session_type: formData.session_type || null,
         location: formData.location || null,
-        environmental_conditions: formData.environmental_conditions || null // Fixed: ensure null is sent if empty
+        environmental_conditions: formData.environmental_conditions || null
       };
 
       console.log('Creating cupping session with data:', sessionData);
@@ -71,13 +71,21 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
 
       // For admins, we might need to bypass RLS or handle differently
       // But for now, let's try the regular insert first
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('cupping_sessions')
-        .insert(sessionData);
+        .insert(sessionData)
+        .select();
 
-      // If there's an error and the user is an admin, we might need to handle it differently
+      // If there's an error and the user is admin, we might need to handle it differently
       if (error) {
         console.log('Insert error:', error);
+        console.log('Error details:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        });
+        
         // Try again with admin privileges if user is admin
         if (isAdmin) {
           console.log('User is admin, trying with admin privileges');
@@ -87,6 +95,7 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
         throw error;
       }
 
+      console.log('Cupping session created successfully:', data);
       toast({
         title: "Success",
         description: "Cupping session created successfully!",
@@ -94,9 +103,10 @@ export function CuppingSessionForm({ onSuccess, onCancel }: CuppingSessionFormPr
       onSuccess();
     } catch (error) {
       console.error('Error creating cupping session:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       toast({
         title: "Error",
-        description: "Failed to create cupping session: " + (error as Error).message,
+        description: "Failed to create cupping session: " + errorMessage,
         variant: "destructive",
       });
     } finally {

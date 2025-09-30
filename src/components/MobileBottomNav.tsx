@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/components/auth/AuthProvider";
-import { Coffee, Flame, FileText, User, Shield, Home, Calculator, Users, Palette, History, MessageSquare, BarChart3, Settings } from "lucide-react";
+import { Coffee, Flame, FileText, User, Shield, Home, Calculator, Users, Palette, History, MessageSquare, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isAdminUser } from '@/utils/adminUtils';
 import { useState, useEffect } from 'react';
@@ -85,7 +85,11 @@ const MobileBottomNav = () => {
       label: "Cupping QA",
       icon: FileText,
       color: "text-accent"
-    },
+    }
+  ];
+
+  // Additional admin items that will be shown in a scrollable section
+  const additionalAdminNavItems = [
     {
       path: "/admin/history",
       label: "History",
@@ -174,6 +178,47 @@ const MobileBottomNav = () => {
           </Link>
         )}
       </div>
+      
+      {/* Additional admin items - shown when in admin mode */}
+      {isAdminMode && (
+        <div className="border-t border-border overflow-x-auto">
+          <div className="flex items-center justify-start px-2 py-2 min-w-max">
+            {additionalAdminNavItems.map((item) => {
+              const isActive = location.pathname === item.path || 
+                              (item.path !== '/admin' && location.pathname.startsWith(item.path));
+              const Icon = item.icon;
+              
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    "flex flex-col items-center justify-center px-3 py-2 min-w-0 rounded-lg transition-all mx-1",
+                    isActive 
+                      ? "bg-secondary shadow-warm" 
+                      : "hover:bg-secondary/50"
+                  )}
+                >
+                  <Icon 
+                    className={cn(
+                      "h-4 w-4 mb-1 transition-colors",
+                      isActive ? item.color : "text-muted-foreground"
+                    )} 
+                  />
+                  <span 
+                    className={cn(
+                      "text-xs font-medium transition-colors text-center",
+                      isActive ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
       
       {/* Admin toggle button - only shown for admin users */}
       {isAdmin && (
